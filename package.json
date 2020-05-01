@@ -1,6 +1,6 @@
 {
   "name": "@gregvanko/rpigpioserver",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "rpigpioserver",
   "main": "index.js",
   "scripts": {
@@ -11,7 +11,7 @@
   "nodemonConfig": {
     "ext": "css, js",
     "delay": "1000"
- },
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/gregoryvanko/RpiGpioServer.git"
