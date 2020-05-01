@@ -21,5 +21,8 @@
   "bugs": {
     "url": "https://github.com/gregoryvanko/RpiGpioServer/issues"
   },
-  "homepage": "https://github.com/gregoryvanko/RpiGpioServer#readme"
+  "homepage": "https://github.com/gregoryvanko/RpiGpioServer#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
 }
