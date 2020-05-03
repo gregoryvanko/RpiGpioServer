@@ -1,0 +1,245 @@
+<!doctype html>
+<html>
+<head>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0'/>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="RpiGpioServer">
+    <link rel="apple-touch-icon" href="apple-icon.png">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>RpiGpioServer</title>
+    <style>
+        :root {
+            --CoreX-color: rgb(20, 163, 255);
+            --CoreX-font-size : 1.5vw;
+            --CoreX-Iphone-font-size : 3vw;
+            --CoreX-Max-font-size : 18px;
+            --CoreX-Titrefont-size : 4vw;
+            --CoreX-TitreIphone-font-size : 7vw;
+            --CoreX-TitreMax-font-size : 50px;
+        }
+        body{
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none; 
+            -webkit-user-select: none;   
+            -khtml-user-select: none;    
+            -moz-user-select: none;      
+            -ms-user-select: none;      
+            user-select: none;  
+            cursor: default;
+            font-family: 'Myriad Set Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            font-synthesis: none;
+            letter-spacing: normal;
+            text-rendering: optimizelegibility;
+            width: 100%;
+            height: 100%;
+        }
+        .DivContent{
+            padding: 1px;
+            margin: 20px auto 10px auto;
+            width: 96%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .Titre{
+            margin: 1% 1% 4% 1%;
+            font-size: var(--CoreX-Titrefont-size);
+            color: var(--CoreX-color);
+        }
+        .Text{font-size: var(--CoreX-font-size);}
+        .TxtDescription {
+            margin:1%; 
+            text-align: right;
+            width:15%;
+        }
+        .TxtInfo{
+            margin: 1%;
+            padding: 1%;
+            width: 70%;
+            border: 2px solid lightgray;
+            border-radius: 5px;
+        }
+        .Button{
+            margin: 0%;
+            padding: 1vh 2vh 1vh 2vh;
+            cursor: pointer;
+            border: 1px solid var(--CoreX-color);
+            border-radius: 20px;
+            text-align: center;
+            display: inline-block;
+            font-size: var(--CoreX-font-size);
+            box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.7);
+            color: rgb(44,1,21);
+            background: white;
+            outline: none;
+        }
+        .Button:hover{
+            box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.7);
+        }
+        .Input {
+            width: 20%;
+            font-size: var(--CoreX-font-size);
+            padding: 1vh;
+            border: solid 0px #dcdcdc;
+            border-bottom: solid 1px #dcdcdc;
+            margin: 1% 0px 1% 0px;
+        }
+        .Input:focus,
+        .Input.focus {
+            outline: none;
+            border-color: var(--CoreX-color);
+        }
+        .Input:hover{
+            border-color: var(--CoreX-color);
+        }
+        .FlexRowStart{
+            width: 100%;
+            display: -webkit-flex;
+            display: flex;
+            flex-direction: row;
+            justify-content:start;
+            align-content:center;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .FlexRowCenterspacearound{
+            display: flex;
+            flex-direction: row;
+            justify-content:space-around;
+            align-content:center;
+            align-items: center;
+            flex-wrap: wrap;
+            margin: 2vh 0px 2vh 0px;
+        }
+        .TextArea{
+            border: solid 1px #dcdcdc;
+            outline: none;
+            resize: none;
+            overflow: auto;
+            padding: 1%;
+            font-size: var(--CoreX-font-size);
+            width:70%;
+            height: 20vh;
+        }
+        .TextArea:focus,
+        .TextArea.focus {
+            border-color: var(--CoreX-color);
+        }
+        .TextArea:hover{
+            border-color: var(--CoreX-color);
+        }
+        @media only screen and (min-device-width: 375px) and (max-device-width: 667px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: portrait),
+            only screen and (min-device-width: 414px) and (max-device-width: 736px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: portrait),
+            screen and (max-width: 700px)
+        {
+            .Titre{font-size: var(--CoreX-TitreIphone-font-size);}
+            .Text{font-size: var(--CoreX-Iphone-font-size);}
+            .Button{font-size: var(--CoreX-Iphone-font-size); border-radius: 40px;}
+            .Input {
+                font-size: var(--CoreX-Iphone-font-size);
+            }
+            .TextArea{
+                font-size: var(--CoreX-Iphone-font-size);
+                width:90%;
+            }
+        }
+        @media screen and (min-width: 1200px)
+        {
+            .DivContent{width: 1100px;}
+            .Titre{font-size: var(--CoreX-TitreMax-font-size);}
+            .Text{font-size: var(--CoreX-Max-font-size);}
+            .Button{font-size: var(--CoreX-Max-font-size); border-radius: 40px;}
+            .Input {font-size: var(--CoreX-Max-font-size);}
+            .TextArea{font-size: var(--CoreX-Max-font-size);}
+        }
+    </style>
+    <script>
+        function Send(){
+            let Action = document.getElementById("Action").value
+            let Data = document.getElementById("Data").value
+            GlobalCallApiPromise(Action, Data).then((reponse)=>{
+                document.getElementById("Reponse").innerHTML=reponse
+                document.getElementById("Error").innerHTML=""
+
+                document.getElementById("DivReponse").style.display = "flex"
+                document.getElementById("DivError").style.display = "none"
+            },(erreur)=>{
+                document.getElementById("Reponse").innerHTML=""
+                document.getElementById("Error").innerHTML=erreur
+
+                document.getElementById("DivReponse").style.display = "none"
+                document.getElementById("DivError").style.display = "flex"
+            })
+
+        }
+
+
+        function GlobalCallApiPromise(FctName, FctData, UploadProgress, DownloadProgress){
+            return new Promise((resolve, reject)=>{
+                var xhttp = new XMLHttpRequest()
+                xhttp.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        let reponse = JSON.parse(this.responseText)
+                        if (reponse.Error) {
+                            console.log('GlobalCallApiPromise Error : ' + reponse.ErrorMsg)
+                            reject(reponse.ErrorMsg)
+                        } else {
+                            resolve(reponse.Data) 
+                        }
+                    } else if (this.readyState == 4 && this.status != 200){
+                        reject(this.response)
+                    }
+                }
+                xhttp.onprogress = function (event) {
+                    if(DownloadProgress){DownloadProgress(event)}
+                    //console.log("Download => Loaded: " + event.loaded + " Total: " +event.total)
+                }
+                xhttp.upload.onprogress= function (event){
+                    if(UploadProgress){UploadProgress(event)}
+                    //console.log("Upload => Loaded: " + event.loaded + " Total: " + event.total)
+                }
+                let adresse = document.getElementById("Adresse").value
+                xhttp.open("POST", adresse , true)
+                xhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8")
+                xhttp.send(JSON.stringify({FctName:FctName, FctData:FctData}))
+            })
+        }
+    </script>
+</head>
+<body>
+<div class="DivContent">
+    <div class="Titre">Send Command</div>
+    <div style="height:2vh;"></div>
+    <div class="FlexRowStart">
+        <div class="Text TxtDescription">Adresse: </div>
+        <input type="text" id="Adresse" name="Adresse" class="Input">
+    </div>
+    <div class="FlexRowStart">
+        <div class="Text TxtDescription">Action: </div>
+        <input type="text" id="Action" name="Action" class="Input">
+    </div>
+    <div class="FlexRowStart">
+        <div class="Text TxtDescription">Data: </div>
+        <textarea id="Data" class="TextArea" wrap="off"></textarea>
+    </div>
+
+    <div class="FlexRowCenterspacearound">
+        <button class="Button" style="margin-left: auto; margin-right: auto;" onclick= "Send()">Send</button>
+    </div>
+
+    <div id="DivReponse" class="FlexRowStart" style="display: none">
+        <div class="Text TxtDescription">Reponse: </div>
+        <div id="Reponse" class="Text TxtInfo"></div>
+    </div>
+    <div id="DivError" class="FlexRowStart" style="display: none">
+        <div class="Text TxtDescription" style="color :red;">Erreur: </div>
+        <div id="Error" class="Text TxtInfo" style="color :red;"></div>
+    </div>
+    
+    
+    
+</div>
+</body>
+</html>
