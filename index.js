@@ -68,7 +68,6 @@ class RpiGpioServer {
                     const Pin = new Gpio(PinNum, 'out')
                     Pin.writeSync(Value)
                     let reponse = "Pin number: " + PinNum + " value: " + Pin.readSync()
-                    let reponse = "Pin number: " + PinNum + " value: " + Value
 
                     res.json({Error: false, ErrorMsg: "no error", Data: reponse})
                 } else {
