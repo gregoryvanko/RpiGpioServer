@@ -58,7 +58,28 @@ class RpiGpioServer {
      * @param {res} res res
      */
     SetGpio(Data, res){
-        res.json({Error: false, ErrorMsg: "No error", Data: Data})
+        try {
+            let InputData = JSON.parse(Data)
+            if(InputData.pin){
+                if(InputData.value){
+                    let PinNum = parseInt(InputData.pin)
+                    let Value = parseInt(InputData.value)
+                    const Gpio = require('onoff').Gpio
+                    const Pin = new Gpio(PinNum, 'out')
+                    Pin.writeSync(Value)
+                    let reponse = "Pin number: " + PinNum + " value: " + Pin.readSync()
+                    let reponse = "Pin number: " + PinNum + " value: " + Value
+
+                    res.json({Error: false, ErrorMsg: "no error", Data: reponse})
+                } else {
+                    res.json({Error: true, ErrorMsg: 'Object "value" is missing in {"pin": number, "value": number}', Data: null})
+                }
+            } else {
+                res.json({Error: true, ErrorMsg: 'Object "pin" is missing in {"pin": number, "value": number}', Data: null})
+            }
+        } catch(e) {
+            res.json({Error: true, ErrorMsg: "JSON Parse error: " + e, Data: null})
+        }
     }
  }
  module.exports.RpiGpioServer = RpiGpioServer
