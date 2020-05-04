@@ -5,6 +5,10 @@ class RpiGpioServer {
         // Variable Interne Express
         this._Express = require('express')()
         this._http = require('http').Server(this._Express)
+
+        // Class GPIO
+        var GPIO = require('./gpio')
+        this._MyGPIO = new GPIO.GPIO(true)
     }
  
     /* Start de l'application */
@@ -50,6 +54,15 @@ class RpiGpioServer {
 		this._http.listen(this._Port, function(){
 			console.log('listening on *:' + me._Port)
         })
+
+        // Evenement GPIO: le boutton est pressé
+		this._MyGPIO.on(this._MyGPIO.EmitOn_Button_Rising, (data) => {
+            console.log("Boutton pressed")
+			// ToDo
+        })
+
+        // Lorsque l'on ferme l'application, il faut libérer les GPIO
+		process.on('SIGINT', this._MyGPIO.UnexportOnClose.bind(this._MyGPIO));
     }
 
     /**
@@ -64,12 +77,17 @@ class RpiGpioServer {
                 if(InputData.value){
                     let PinNum = parseInt(InputData.pin)
                     let Value = parseInt(InputData.value)
-                    const Gpio = require('onoff').Gpio
-                    const Pin = new Gpio(PinNum, 'out')
-                    Pin.writeSync(Value)
-                    let reponse = "Pin number: " + PinNum + " value: " + Pin.readSync()
-
-                    res.json({Error: false, ErrorMsg: "no error", Data: reponse})
+                    if (Value == 0){
+                        this._MyGPIO.SetRelayStatus(this._MyGPIO.Const_RelayStatus_On, () => {
+                            let reponse = "Pin number: " + PinNum + " value: " + Value
+                            res.json({Error: false, ErrorMsg: "no error", Data: reponse})
+                        })
+                    } else {
+                        this._MyGPIO.SetRelayStatus(this._MyGPIO.Const_RelayStatus_Off, () => {
+                            let reponse = "Pin number: " + PinNum + " value: " + Value
+                            res.json({Error: false, ErrorMsg: "no error", Data: reponse})
+                        })
+                    }
                 } else {
                     res.json({Error: true, ErrorMsg: 'Object "value" is missing in {"pin": number, "value": number}', Data: null})
                 }
