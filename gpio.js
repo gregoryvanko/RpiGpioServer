@@ -12,13 +12,25 @@ class GPIO extends EventEmitter{
 
         this._PinRelay1 = 2
         
-        this._PinButton = 17
+        //this._PinButton = 17
         
         this._Relay1 =""
         
-		this._Button=""
-
-		this.Initialisation();
+        //this._Button=""
+        
+        var Gpio = require('onoff').Gpio
+        this._Relay1 = new Gpio(this._PinRelay1, 'high', 'none', {activeLow: true})
+        
+		// this._Button = new Gpio(this._PinButton, 'in', 'rising')
+		// var me = this
+		// this._Button.watch(function (err, value){
+		// 	me.Log("Button is rising")
+		// 	if (err) {
+		// 		console.error('There was an error on GPIO: ', err)
+		// 	} else {
+		// 		me.emit(me._EmitOn_Button_Rising, "Rising")
+		// 	}
+		// })
 	}
 
 	get Const_RelayStatus_On(){return this._Const_RelayStatus_On;}
@@ -31,26 +43,11 @@ class GPIO extends EventEmitter{
 		}
 	}
 
-	Initialisation(){
-		var Gpio = require('onoff').Gpio
-        this._Relay1 = new Gpio(this._PinRelay1, 'high', 'none', {activeLow: true})
-		this._Button = new Gpio(this._PinButton, 'in', 'rising')
-		var me = this
-		this._Button.watch(function (err, value){
-			me.Log("Button is rising")
-			if (err) {
-				console.error('There was an error on GPIO: ', err)
-			} else {
-				me.emit(me._EmitOn_Button_Rising, "Rising")
-			}
-		})
-	}
-
 	UnexportOnClose(){
 		this.Log("unexport on close")
 		this._Relay1.writeSync(0)
 		this._Relay1.unexport()
-		this._Button.unexport()
+		//this._Button.unexport()
 		process.exit()
 	}
 
