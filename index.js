@@ -73,8 +73,8 @@ class RpiGpioServer {
     SetGpio(Data, res){
         try {
             let InputData = JSON.parse(Data)
-            if(InputData.pin){
-                if(InputData.value){
+            if(typeof InputData.pin != "undefined"){
+                if(typeof InputData.value != "undefined"){
                     let PinNum = parseInt(InputData.pin)
                     let Value = parseInt(InputData.value)
                     if (Value == 0){
