@@ -33,7 +33,7 @@ class GPIO extends EventEmitter{
 
 	Initialisation(){
 		var Gpio = require('onoff').Gpio
-		this._Relay1 = new Gpio(this._PinRelay1, 'out')
+        this._Relay1 = new Gpio(this._PinRelay1, 'out', 'none', {activeLow: true})
 		this._Button = new Gpio(this._PinButton, 'in', 'rising')
 		var me = this
 		this._Button.watch(function (err, value){

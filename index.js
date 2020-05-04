@@ -78,12 +78,12 @@ class RpiGpioServer {
                     let PinNum = parseInt(InputData.pin)
                     let Value = parseInt(InputData.value)
                     if (Value == 0){
-                        this._MyGPIO.SetRelayStatus(this._MyGPIO.Const_RelayStatus_On, () => {
+                        this._MyGPIO.SetRelayStatus(this._MyGPIO.Const_RelayStatus_Off, () => {
                             let reponse = "Pin number: " + PinNum + " value: " + Value
                             res.json({Error: false, ErrorMsg: "no error", Data: reponse})
                         })
                     } else {
-                        this._MyGPIO.SetRelayStatus(this._MyGPIO.Const_RelayStatus_Off, () => {
+                        this._MyGPIO.SetRelayStatus(this._MyGPIO.Const_RelayStatus_On, () => {
                             let reponse = "Pin number: " + PinNum + " value: " + Value
                             res.json({Error: false, ErrorMsg: "no error", Data: reponse})
                         })
