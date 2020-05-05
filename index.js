@@ -79,12 +79,12 @@ class RpiGpioServer {
                     let Value = parseInt(InputData.value)
                     if (Value == 0){
                         this._MyGPIO.SetRelayStatus(InputData.name, this._MyGPIO.Const_RelayStatus_Off, () => {
-                            let reponse = "Pin number: " + PinNum + " value: " + Value
+                            let reponse = "Name: " + InputData.name + " value: " + Value
                             res.json({Error: false, ErrorMsg: "no error", Data: reponse})
                         })
                     } else {
                         this._MyGPIO.SetRelayStatus(InputData.name, this._MyGPIO.Const_RelayStatus_On, () => {
-                            let reponse = "Pin number: " + PinNum + " value: " + Value
+                            let reponse = "Name: " + InputData.name + " value: " + Value
                             res.json({Error: false, ErrorMsg: "no error", Data: reponse})
                         })
                     }
@@ -92,7 +92,7 @@ class RpiGpioServer {
                     res.json({Error: true, ErrorMsg: 'Object "value" is missing in {"name": string, "value": number}', Data: null})
                 }
             } else {
-                res.json({Error: true, ErrorMsg: 'Object "pin" is missing in {"name": string, "value": number}', Data: null})
+                res.json({Error: true, ErrorMsg: 'Object "name" is missing in {"name": string, "value": number}', Data: null})
             }
         } catch(e) {
             res.json({Error: true, ErrorMsg: "JSON Parse error: " + e, Data: null})
