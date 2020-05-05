@@ -17,7 +17,7 @@ class GPIO extends EventEmitter{
 		
 		this._ListOfRelais = []
         
-        var Gpio = require('onoff').Gpio
+        //var Gpio = require('onoff').Gpio
 		//this._Relay1 = new Gpio(this._PinRelay1, 'high', 'none', {activeLow: true})
 		this._Config.forEach(element => {
 			if(element.type == "Relais"){
@@ -66,7 +66,6 @@ class GPIO extends EventEmitter{
 	}
 
 	SetRelayStatus(Name, Status, Callback = ""){
-		this.Log("SetRelayStatus " + Name + " " + Status)
 		let Relais = null
 		this._ListOfRelais.forEach(element => {
 			if(element.Name == Name){
