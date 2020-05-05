@@ -1,6 +1,7 @@
 class RpiGpioServer {
-    constructor(Port=3000){
+    constructor(Port=3000, Config){
         this._Port = Port
+        this._Config = Config
 
         // Variable Interne Express
         this._Express = require('express')()
@@ -8,7 +9,7 @@ class RpiGpioServer {
 
         // Class GPIO
         var GPIO = require('./gpio')
-        this._MyGPIO = new GPIO.GPIO(true)
+        this._MyGPIO = new GPIO.GPIO(true, this._Config)
     }
  
     /* Start de l'application */
@@ -75,24 +76,23 @@ class RpiGpioServer {
             let InputData = JSON.parse(Data)
             if(typeof InputData.pin != "undefined"){
                 if(typeof InputData.value != "undefined"){
-                    let PinNum = parseInt(InputData.pin)
                     let Value = parseInt(InputData.value)
                     if (Value == 0){
-                        this._MyGPIO.SetRelayStatus(this._MyGPIO.Const_RelayStatus_Off, () => {
+                        this._MyGPIO.SetRelayStatus(InputData.name, this._MyGPIO.Const_RelayStatus_Off, () => {
                             let reponse = "Pin number: " + PinNum + " value: " + Value
                             res.json({Error: false, ErrorMsg: "no error", Data: reponse})
                         })
                     } else {
-                        this._MyGPIO.SetRelayStatus(this._MyGPIO.Const_RelayStatus_On, () => {
+                        this._MyGPIO.SetRelayStatus(InputData.name, this._MyGPIO.Const_RelayStatus_On, () => {
                             let reponse = "Pin number: " + PinNum + " value: " + Value
                             res.json({Error: false, ErrorMsg: "no error", Data: reponse})
                         })
                     }
                 } else {
-                    res.json({Error: true, ErrorMsg: 'Object "value" is missing in {"pin": number, "value": number}', Data: null})
+                    res.json({Error: true, ErrorMsg: 'Object "value" is missing in {"name": string, "value": number}', Data: null})
                 }
             } else {
-                res.json({Error: true, ErrorMsg: 'Object "pin" is missing in {"pin": number, "value": number}', Data: null})
+                res.json({Error: true, ErrorMsg: 'Object "pin" is missing in {"name": string, "value": number}', Data: null})
             }
         } catch(e) {
             res.json({Error: true, ErrorMsg: "JSON Parse error: " + e, Data: null})
