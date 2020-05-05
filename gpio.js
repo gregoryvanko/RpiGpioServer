@@ -80,6 +80,8 @@ class GPIO extends EventEmitter{
 			} else {
 				this.Log("Le Status est inconnu: " + Status);
 			}
+		} else {
+			this.Log("SetRelayStatus Relais not found")
 		}
 	}
 }
