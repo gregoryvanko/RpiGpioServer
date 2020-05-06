@@ -22,12 +22,7 @@
             margin: 0;
             padding: 0;
             -webkit-tap-highlight-color: transparent;
-            -webkit-touch-callout: none; 
-            -webkit-user-select: none;   
-            -khtml-user-select: none;    
-            -moz-user-select: none;      
-            -ms-user-select: none;      
-            user-select: none;  
+            -webkit-touch-callout: none;  
             cursor: default;
             font-family: 'Myriad Set Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
             font-synthesis: none;
@@ -160,7 +155,7 @@
             let Action = document.getElementById("Action").value
             let Data = document.getElementById("Data").value
             GlobalCallApiPromise(Action, Data).then((reponse)=>{
-                document.getElementById("Reponse").innerHTML=reponse
+                document.getElementById("Reponse").innerHTML=JSON.stringify(reponse)
                 document.getElementById("Error").innerHTML=""
 
                 document.getElementById("DivReponse").style.display = "flex"

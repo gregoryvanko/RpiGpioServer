@@ -7,6 +7,7 @@ const config = [
     {"pin":22, "type": "Relais", "name": "Relais6", "statu": "high", "activeLow" : true},
     {"pin":10, "type": "Relais", "name": "Relais7", "statu": "high", "activeLow" : true},
     {"pin":9, "type": "Relais", "name": "Relais8", "statu": "high", "activeLow" : true},
+    {"pin":7, "type": "Button", "name": "Button1", "statu": "rising", "debounceTimeout" : 10}
  ]
 let RpiGpioServer = require('./index').RpiGpioServer
 let MyApp = new RpiGpioServer(3000, config)

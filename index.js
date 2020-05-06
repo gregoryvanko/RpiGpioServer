@@ -9,7 +9,7 @@ class RpiGpioServer {
 
         // Class GPIO
         var GPIO = require('./gpio')
-        this._MyGPIO = new GPIO.GPIO(true, this._Config)
+        this._MyGPIO = new GPIO.GPIO(this._Config)
     }
  
     /* Start de l'application */
@@ -58,7 +58,7 @@ class RpiGpioServer {
 
         // Evenement GPIO: le boutton est pressé
 		this._MyGPIO.on(this._MyGPIO.EmitOn_Button_Rising, (data) => {
-            console.log("Boutton pressed")
+            console.log("Boutton pressed: " + data)
 			// ToDo
         })
 
@@ -77,17 +77,20 @@ class RpiGpioServer {
             if(typeof InputData.name != "undefined"){
                 if(typeof InputData.value != "undefined"){
                     let Value = parseInt(InputData.value)
-                    if (Value == 0){
-                        this._MyGPIO.SetRelayStatus(InputData.name, this._MyGPIO.Const_RelayStatus_Off, () => {
-                            let reponse = "Name: " + InputData.name + " value: " + Value
-                            res.json({Error: false, ErrorMsg: "no error", Data: reponse})
-                        })
-                    } else {
-                        this._MyGPIO.SetRelayStatus(InputData.name, this._MyGPIO.Const_RelayStatus_On, () => {
-                            let reponse = "Name: " + InputData.name + " value: " + Value
-                            res.json({Error: false, ErrorMsg: "no error", Data: reponse})
-                        })
-                    }
+
+                    let relaisStatus =""
+                    if (Value == 0){relaisStatus = this._MyGPIO.Const_RelayStatus_Off} 
+                    else {relaisStatus = this._MyGPIO.Const_RelayStatus_On}
+
+                    this._MyGPIO.SetRelayStatus(InputData.name, relaisStatus).then((reponse)=>{
+                        let ReponseSetGpio = new Object()
+                        ReponseSetGpio. ApiVersion = "1.0"
+                        ReponseSetGpio.Name = InputData.name
+                        ReponseSetGpio.value = Value
+                        res.json({Error: false, ErrorMsg: "no error", Data: ReponseSetGpio})
+                    },(erreur)=>{
+                        res.json({Error: true, ErrorMsg: "Error on SetGpio: " + erreur, Data: null})
+                    })
                 } else {
                     res.json({Error: true, ErrorMsg: 'Object "value" is missing in {"name": string, "value": number}', Data: null})
                 }
