@@ -31,6 +31,9 @@ class RpiGpioServer {
                 case "setgpio":
                     me.SetGpio(req.body.FctData, res)
                     break
+                case "testbutton":
+                    me.Testbutton(req.body.FctData, res)
+                    break
                 default:
                     res.json({Error: true, ErrorMsg:"No API for FctName: " + req.body.FctName})
                     break
@@ -58,8 +61,7 @@ class RpiGpioServer {
 
         // Evenement GPIO: le boutton est pressé
 		this._MyGPIO.on(this._MyGPIO.EmitOn_Button_Rising, (data) => {
-            console.log("Boutton pressed: " + data)
-			// ToDo
+            this.ButtonPressed(data)
         })
 
         // Lorsque l'on ferme l'application, il faut libérer les GPIO
@@ -98,8 +100,35 @@ class RpiGpioServer {
                 res.json({Error: true, ErrorMsg: 'Object "name" is missing in {"name": string, "value": number}', Data: null})
             }
         } catch(e) {
-            res.json({Error: true, ErrorMsg: "JSON Parse error: " + e, Data: null})
+            res.json({Error: true, ErrorMsg: "JSON Parse error: " + e + ' in {"name": string, "value": number}', Data: null})
         }
+    }
+
+    /**
+     * Simule l'appui sur un bouton via l'API
+     * @param {object} Data Obeject contenant la commande a realiser
+     * @param {res} res res
+     */
+    Testbutton(Data, res){
+        try {
+            let InputData = JSON.parse(Data)
+            if(typeof InputData.name != "undefined"){
+                this.ButtonPressed(InputData.name)
+                let ReponseTestbutton = new Object()
+                ReponseTestbutton. ApiVersion = "1.0"
+                ReponseTestbutton.info = InputData.name + " is pressed"
+                res.json({Error: false, ErrorMsg: "no error", Data: ReponseTestbutton})
+            } else {
+                res.json({Error: true, ErrorMsg: 'Object "name" is missing in {"name": string}', Data: null})
+            }
+        } catch(e) {
+            res.json({Error: true, ErrorMsg: "JSON Parse error: " + e + ' in {"name": string}', Data: null})
+        }
+    }
+
+    ButtonPressed(ButtonName){
+        console.log("Boutton pressed: " + ButtonName)
+        // ToDo
     }
  }
  module.exports.RpiGpioServer = RpiGpioServer

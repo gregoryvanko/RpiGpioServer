@@ -19,8 +19,25 @@ const config = [
     {"pin":22, "type": "Relais", "name": "Relais6", "statu": "high", "activeLow" : true},
     {"pin":10, "type": "Relais", "name": "Relais7", "statu": "high", "activeLow" : true},
     {"pin":9, "type": "Relais", "name": "Relais8", "statu": "high", "activeLow" : true},
+    {"pin":7, "type": "Button", "name": "Button1", "statu": "rising", "debounceTimeout" : 500}
  ]
 let RpiGpioServer = require('@gregvanko/rpigpioserver').RpiGpioServer
 let MyApp = new RpiGpioServer(3000, config)
 MyApp.Start()
+```
+## Api
+Voici la definition des fonctions disponibles à l'adresse /api:
+
+```
+Activer une valeur pour une des pin configurée dans l'object config
+
+Action : setgpio
+Data : {"name": string, "value": number}
+```
+
+```
+Simuler l'appui sur un boutton confiuré dans l'object config
+
+Action : testbutton
+Data : {"name": string}
 ```
