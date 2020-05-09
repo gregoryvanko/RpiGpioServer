@@ -128,7 +128,12 @@ class RpiGpioServer {
 
     ButtonPressed(ButtonName){
         console.log("Boutton pressed: " + ButtonName)
-        // ToDo
+        const axios = require('axios')
+        axios.post('http://192.168.10.21:5000/api', {todo: 'Buy the milk'}).then(res => {
+            console.log(res.data)
+        }).catch(error => {
+            console.error(error)
+        })
     }
  }
  module.exports.RpiGpioServer = RpiGpioServer

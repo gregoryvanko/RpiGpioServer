@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/gregoryvanko/RpiGpioServer#readme",
   "dependencies": {
+    "axios": "^0.19.2",
     "express": "^4.17.1",
     "onoff": "^6.0.0"
   }

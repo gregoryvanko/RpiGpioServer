@@ -14,13 +14,23 @@ class GPIO extends EventEmitter{
 		
 		this._Config.forEach(element => {
 			let MyObject = new Object()
-			MyObject.Name = element.name
+			if(typeof element.name != "undefined"){
+				MyObject.Name = element.name
+			} else {
+				MyObject.Name = null
+			}
 			if(element.type == "Relais"){
-				if(process.env.NODE_ENV === 'dev') {
-					MyObject.Relais = "GPIO Object Relais"
+				if(typeof element.TimeOut != "undefined"){
+					MyObject.TimeOutValue = parseInt(element.TimeOut)
 				} else {
+					MyObject.TimeOutValue = null
+				}
+				MyObject.TimeOut = null
+				if(process.env.NODE_ENV != 'dev') {
 					var Gpio = require('onoff').Gpio
 					MyObject.Relais = new Gpio(element.pin, element.statu, 'none', {activeLow: element.activeLow})
+				} else {
+					MyObject.Relais = "GPIO Object Relais"
 				}
 				this._ListOfRelais.push(MyObject)
 			} else if (element.type == "Button"){
@@ -59,18 +69,26 @@ class GPIO extends EventEmitter{
 
 	SetRelayStatus(Name, Status){
 		return new Promise((resolve, reject)=>{
-			let Relais = null
+			let ObjectRelais = null
 			// On cherche le relais dans la liste des relais
 			this._ListOfRelais.forEach(element => {
 				if(element.Name == Name){
-					Relais = element.Relais
+					ObjectRelais = element
 				}
 			})
 			// Si le relais est trouvé
-			if (Relais != null){
+			if (ObjectRelais != null){
 				if ((Status == this._Const_RelayStatus_On) || (Status == this._Const_RelayStatus_Off)){
 					if(process.env.NODE_ENV != 'dev'){
-						Relais.writeSync(Status)
+						ObjectRelais.Relais.writeSync(Status)
+					}
+					if (Status == this._Const_RelayStatus_On){
+						ObjectRelais.TimeOut = setTimeout(()=>{ this.SetRelayStatus(Name, this._Const_RelayStatus_Off)}, (ObjectRelais.TimeOutValue * 1000))
+					} else {
+						if (ObjectRelais.TimeOut != null){
+							clearTimeout(ObjectRelais.TimeOut)
+							ObjectRelais.TimeOut = null
+						}
 					}
 					resolve()
 				} else {
