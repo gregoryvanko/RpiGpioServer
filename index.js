@@ -39,6 +39,10 @@ class RpiGpioServer {
                     break
             }
         })
+        // Ping
+        this._Express.post('/ping', function(req, res, next){
+            res.json({Error: false, ErrorMsg:"No error",Data: "pong"})
+        })
         // Creation de la route 404
         this._Express.use(function(req, res, next) {
             console.log('Mauvaise route: ' + req.originalUrl)
