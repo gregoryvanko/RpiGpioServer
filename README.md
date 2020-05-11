@@ -29,14 +29,14 @@ MyApp.Start()
 ## Definition des fonctions disponibles sur les différentes adresses
 Il est posible de tester les api via la page d'acceuil du serveur
 ### Adresse : api
-Activer une valeur pour une des pin configurée dans l'object config
+* Activer une valeur pour un des GPIO configurés dans l'object config
 ```
 Adresse : api
 Action : setgpio
 Data : {"name": string, "value": number}
 ```
 
-Simuler l'appui sur un boutton confiuré dans l'object config
+* Simuler l'appui sur un boutton confiuré dans l'object config
 ```
 Adresse : api
 Action : testbutton
@@ -44,7 +44,7 @@ Data : {"name": string}
 ```
 
 ### Adresse : ping
-1. Recevoir la valeur "pong"
+* Recevoir la valeur "pong"
 ```
 Adresse : ping
 Action : null
