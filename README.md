@@ -26,24 +26,27 @@ let RpiGpioServer = require('@gregvanko/rpigpioserver').RpiGpioServer
 let MyApp = new RpiGpioServer(3000, config)
 MyApp.Start()
 ```
-## Api
+## Definition des fonctions disponibles sur les différentes adresses
 Il est posible de tester les api via la page d'acceuil du serveur
-### Definition des fonctions disponibles sur l'adresse **api**
-1. Activer une valeur pour une des pin configurée dans l'object config
+### Adresse : api
+Activer une valeur pour une des pin configurée dans l'object config
 ```
+Adresse : api
 Action : setgpio
 Data : {"name": string, "value": number}
 ```
 
-2. Simuler l'appui sur un boutton confiuré dans l'object config
+Simuler l'appui sur un boutton confiuré dans l'object config
 ```
+Adresse : api
 Action : testbutton
 Data : {"name": string}
 ```
 
-### Definition des fonctions disponibles à l'adresse **ping**
+### Adresse : ping
 1. Recevoir la valeur "pong"
 ```
+Adresse : ping
 Action : null
 Data : null
 ```
