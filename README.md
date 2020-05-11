@@ -1,8 +1,15 @@
 # RpiGpioServer
-A Node.js application for controling GPIO of RaspberryPi
+A Node.js application for controling GPIO of RaspberryPi.
+
+## Function available:
+* Relais
+    * Set Relais to On/Off
+    * Get Relais Statu
+* Button
+    * Send post data when a button is pressed
 
 ## Usage
-First, install the package using npm:
+Install the package using npm:
 ```bash
 npm install @gregvanko/rpigpioserver --save
 ```
@@ -20,18 +27,23 @@ let MyApp = new RpiGpioServer(3000, config)
 MyApp.Start()
 ```
 ## Api
-Voici la definition des fonctions disponibles à l'adresse /api:
-
+Il est posible de tester les api via la page d'acceuil du serveur
+### Definition des fonctions disponibles sur l'adresse **api**
+1. Activer une valeur pour une des pin configurée dans l'object config
 ```
-Activer une valeur pour une des pin configurée dans l'object config
-
 Action : setgpio
 Data : {"name": string, "value": number}
 ```
 
+2. Simuler l'appui sur un boutton confiuré dans l'object config
 ```
-Simuler l'appui sur un boutton confiuré dans l'object config
-
 Action : testbutton
 Data : {"name": string}
+```
+
+### Definition des fonctions disponibles à l'adresse **ping**
+1. Recevoir la valeur "pong"
+```
+Action : null
+Data : null
 ```
