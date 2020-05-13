@@ -9,6 +9,13 @@ const config = [
     {"pin":9, "type": "Relais", "name": "Relais8", "statu": "high", "activeLow" : true},
     {"pin":7, "type": "Button", "name": "Button1", "statu": "rising", "debounceTimeout" : 500}
  ]
+ const CoreX = {
+     "WorkerAdress": "http://192.168.10.21:5000",
+     "WorkerApi": "/api",
+     "LoginApi": "/login",
+     "Login": "Aquagreen",
+     "Pass":"123"
+}
 let RpiGpioServer = require('./index').RpiGpioServer
-let MyApp = new RpiGpioServer(3000, config)
+let MyApp = new RpiGpioServer(3000, config, CoreX)
 MyApp.Start()

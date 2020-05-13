@@ -1,7 +1,8 @@
 class RpiGpioServer {
-    constructor(Port=3000, Config){
+    constructor(Port=3000, Config = [], CoreX = null){
         this._Port = Port
         this._Config = Config
+        this._CoreX = CoreX
 
         // Variable Interne Express
         this._Express = require('express')()
@@ -10,6 +11,8 @@ class RpiGpioServer {
         // Class GPIO
         var GPIO = require('./gpio')
         this._MyGPIO = new GPIO.GPIO(this._Config)
+
+        this._LoginToken = null
     }
  
     /* Start de l'application */
@@ -29,10 +32,10 @@ class RpiGpioServer {
         this._Express.post('/api', function(req, res, next){
             switch (req.body.FctName) {
                 case "setgpio":
-                    me.SetGpio(req.body.FctData, res)
+                    me.ApiSetGpio(req.body.FctData, res)
                     break
-                case "testbutton":
-                    me.Testbutton(req.body.FctData, res)
+                case "ping":
+                    res.json({Error: false, ErrorMsg:"No error",Data: "pong"})
                     break
                 default:
                     res.json({Error: true, ErrorMsg:"No API for FctName: " + req.body.FctName})
@@ -40,8 +43,21 @@ class RpiGpioServer {
             }
         })
         // Ping
-        this._Express.post('/ping', function(req, res, next){
-            res.json({Error: false, ErrorMsg:"No error",Data: "pong"})
+        this._Express.post('/config', function(req, res, next){
+            switch (req.body.FctName) {
+                case "testbutton":
+                    me.ApiTestbutton(req.body.FctData, res)
+                    break
+                case "login":
+                    me.ApiLogin(req.body.FctData, res)
+                    break
+                case "pingworker":
+                    me.ApiPingWorker(res)
+                    break
+                default:
+                    res.json({Error: true, ErrorMsg:"FctName not find: " + req.body.FctName})
+                    break
+            }
         })
         // Creation de la route 404
         this._Express.use(function(req, res, next) {
@@ -65,11 +81,28 @@ class RpiGpioServer {
 
         // Evenement GPIO: le boutton est pressé
 		this._MyGPIO.on(this._MyGPIO.EmitOn_Button_Rising, (data) => {
-            this.ButtonPressed(data)
+            this.ButtonPressed(data).then((reponse)=>{
+                console.log(reponse)
+            },(erreur)=>{
+                console.log("Error on sending pressed button: " + erreur)
+            })
         })
 
         // Lorsque l'on ferme l'application, il faut libérer les GPIO
-		process.on('SIGINT', this._MyGPIO.UnexportOnClose.bind(this._MyGPIO));
+        process.on('SIGINT', this._MyGPIO.Close.bind(this._MyGPIO))
+        
+        // if Worker CoreX existe, alors login to worker
+        if (this._CoreX != null){
+            this.Login({"login": this._CoreX.Login, "pass": this._CoreX.Pass}).then((reponse)=>{
+                this.PingWorker().then((reponse)=>{
+                    console.log("Loged to the worker")
+                },(erreur)=>{
+                    console.log("Error on Ping to worker: " + erreur)
+                })
+            },(erreur)=>{
+                console.log("Error on logoin to worker: " + erreur)
+            })
+        }
     }
 
     /**
@@ -77,7 +110,7 @@ class RpiGpioServer {
      * @param {object} Data Object contenant la commande a realiser
      * @param {res} res res
      */
-    SetGpio(Data, res){
+    ApiSetGpio(Data, res){
         try {
             let InputData = JSON.parse(Data)
             if(typeof InputData.name != "undefined"){
@@ -98,13 +131,13 @@ class RpiGpioServer {
                         res.json({Error: true, ErrorMsg: "Error on SetGpio: " + erreur, Data: null})
                     })
                 } else {
-                    res.json({Error: true, ErrorMsg: 'Object "value" is missing in {"name": string, "value": number}', Data: null})
+                    res.json({Error: true, ErrorMsg: 'Object "value" is missing in {"name": "string", "value": number}', Data: null})
                 }
             } else {
-                res.json({Error: true, ErrorMsg: 'Object "name" is missing in {"name": string, "value": number}', Data: null})
+                res.json({Error: true, ErrorMsg: 'Object "name" is missing in {"name": "string", "value": number}', Data: null})
             }
         } catch(e) {
-            res.json({Error: true, ErrorMsg: "JSON Parse error: " + e + ' in {"name": string, "value": number}', Data: null})
+            res.json({Error: true, ErrorMsg: "JSON Parse error: " + e + ' in {"name": "string", "value": number}', Data: null})
         }
     }
 
@@ -113,31 +146,129 @@ class RpiGpioServer {
      * @param {object} Data Obeject contenant la commande a realiser
      * @param {res} res res
      */
-    Testbutton(Data, res){
+    ApiTestbutton(Data, res){
         try {
             let InputData = JSON.parse(Data)
             if(typeof InputData.name != "undefined"){
-                this.ButtonPressed(InputData.name)
-                let ReponseTestbutton = new Object()
-                ReponseTestbutton. ApiVersion = "1.0"
-                ReponseTestbutton.info = InputData.name + " is pressed"
-                res.json({Error: false, ErrorMsg: "no error", Data: ReponseTestbutton})
+                this.ButtonPressed(InputData.name).then((reponse)=>{
+                    let ReponseTestbutton = new Object()
+                    ReponseTestbutton. ApiVersion = "1.0"
+                    ReponseTestbutton.info = reponse
+                    res.json({Error: false, ErrorMsg: "no error", Data: ReponseTestbutton})
+                },(erreur)=>{
+                    res.json({Error: true, ErrorMsg: "Error on sending pressed button: " + erreur, Data: null})
+                })
             } else {
-                res.json({Error: true, ErrorMsg: 'Object "name" is missing in {"name": string}', Data: null})
+                res.json({Error: true, ErrorMsg: 'Object "name" is missing in {"name": "string"}', Data: null})
             }
         } catch(e) {
-            res.json({Error: true, ErrorMsg: "JSON Parse error: " + e + ' in {"name": string}', Data: null})
+            res.json({Error: true, ErrorMsg: "JSON Parse error: " + e + ' in {"name": "string"}', Data: null})
         }
     }
 
     ButtonPressed(ButtonName){
-        console.log("Boutton pressed: " + ButtonName)
-        const axios = require('axios')
-        axios.post('http://192.168.10.21:5000/api', {todo: 'Buy the milk'}).then(res => {
-            console.log(res.data)
-        }).catch(error => {
-            console.error(error)
+        return new Promise((resolve, reject)=>{
+            console.log("Boutton pressed: " + ButtonName)
+            if (this._CoreX != null){
+                const axios = require('axios')
+                axios.post(this._CoreX.WorkerAdress + this._CoreX.WorkerApi, {Token:this._LoginToken, FctName:"Worker", FctData:{Fct:"ButtonPressed", Name:ButtonName}}).then(res => {
+                    if (res.data.Error){
+                        reject(res.data.ErrorMsg)
+                    } else {
+                        resolve(res.data.Data)
+                    }
+                }).catch(error => {
+                    reject(error)
+                })
+            } else {
+                reject("No CoreX Worker defined")
+            }
         })
     }
+
+    /**
+     * Actionne un GPIO
+     * @param {object} Data Object contenant la commande a realiser
+     * @param {res} res res
+     */
+    ApiLogin(Data,res){
+        try {
+            let InputData = JSON.parse(Data)
+            if(typeof InputData.login != "undefined"){
+                if(typeof InputData.pass != "undefined"){
+                    this.Login(InputData).then((reponse)=>{
+                        let ReponseLogin = new Object()
+                        ReponseLogin. ApiVersion = "1.0"
+                        ReponseLogin.info = reponse
+                        res.json({Error: false, ErrorMsg: "no error", Data: ReponseLogin})
+                    },(erreur)=>{
+                        res.json({Error: true, ErrorMsg: "Error on logoin to worker: " + erreur, Data: null})
+                    })
+                } else {
+                    res.json({Error: true, ErrorMsg: 'Object "pass" is missing in {"login": "string", "pass": "string"}', Data: null})
+                }
+            } else {
+                res.json({Error: true, ErrorMsg: 'Object "login" is missing in {"login": "string", "pass": "string"}', Data: null})
+            }
+        } catch(e) {
+            res.json({Error: true, ErrorMsg: "JSON Parse error: " + e + ' in {"login": "string", "pass": "string"}', Data: null})
+        }
+    }
+
+    Login(Data){
+        return new Promise((resolve, reject)=>{
+            if (this._CoreX != null){
+                const axios = require('axios')
+                axios.post(this._CoreX.WorkerAdress + this._CoreX.LoginApi, {Site:"App", Login:Data.login, Pass:Data.pass}).then(res => {
+                    if (res.data.Error){
+                        reject(res.data.ErrorMsg)
+                    } else {
+                        this._LoginToken = res.data.Token
+                        resolve("Login Done")
+                    }
+                }).catch(error => {
+                    reject(error)
+                })
+            } else {
+                reject("No CoreX Worker defined")
+            }
+        })
+    }
+
+    /**
+     * Ping du workerr
+     * @param {res} res res
+     */
+    ApiPingWorker(res){
+        this.PingWorker().then((reponse)=>{
+            let ReponseTestbutton = new Object()
+            ReponseTestbutton. ApiVersion = "1.0"
+            ReponseTestbutton.info = reponse
+            res.json({Error: false, ErrorMsg: "no error", Data: ReponseTestbutton})
+        },(erreur)=>{
+            res.json({Error: true, ErrorMsg: "Error on Ping Worker: " + erreur, Data: null})
+        })
+    }
+
+    PingWorker(){
+        return new Promise((resolve, reject)=>{
+            if (this._CoreX != null){
+                const axios = require('axios')
+                axios.post(this._CoreX.WorkerAdress + this._CoreX.WorkerApi, {Token:this._LoginToken, FctName:"Worker", FctData:{Fct:"Ping"}}).then(res => {
+                    if (res.data.Error){
+                        reject(res.data.ErrorMsg)
+                    } else {
+                        resolve(res.data.Data)
+                    }
+                }).catch(error => {
+                    reject(error)
+                })
+            } else {
+                reject("No CoreX Worker defined")
+            }
+        })
+    }
+
+
  }
  module.exports.RpiGpioServer = RpiGpioServer
