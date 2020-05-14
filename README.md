@@ -52,18 +52,33 @@ Adresse : api
 Action : setgpio
 Data : {"name": string, "value": number}
 ```
+
 * "Ping Pong"
 ```
-Adresse : ping
+Adresse : api
 Action : null
 Data : null
 ```
 
-* Simuler l'appui sur un boutton confiuré dans l'object config
+* Set de la config des GPIO
 ```
 Adresse : api
-Action : testbutton
-Data : {"name": string}
+Action : setconfig
+Data : {"config": Array}
+```
+
+* Get de la config des GPIO
+```
+Adresse : api
+Action : getconfig
+Data : null
+```
+
+* Get global statu du serveur RpiGpioServer 
+```
+Adresse : api
+Action : getstatu
+Data : null
 ```
 
 ### Adresse : config
