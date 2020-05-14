@@ -11,8 +11,6 @@ class GPIO extends EventEmitter{
 		
 		this._ListOfRelais = []
 		this._ListOfButtons = []
-		
-		this.SetConfig(this._Config)
 	}
 
 	get Const_RelayStatus_On(){return this._Const_RelayStatus_On;}
@@ -20,6 +18,10 @@ class GPIO extends EventEmitter{
 	get EmitOn_Button_Rising(){return this._EmitOn_Button_Rising;}
 
 	SetConfig(Config){
+		this._Config = Config
+		this.UnexportGpio()
+		this._ListOfRelais = []
+		this._ListOfButtons = []
 		Config.forEach(element => {
 			let MyObject = new Object()
 			if(typeof element.name != "undefined"){
@@ -56,6 +58,10 @@ class GPIO extends EventEmitter{
 				this._ListOfButtons.push(MyObject)
 			}
 		})
+	}
+
+	GetConfig(){
+		return this._Config
 	}
 
 	UnexportGpio(){

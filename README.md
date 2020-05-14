@@ -17,13 +17,30 @@ npm install @gregvanko/rpigpioserver --save
 ## Start app
 Creat a file "App.js" with:
 ```js
-const config = [
+let RpiGpioServer = require('@gregvanko/rpigpioserver').RpiGpioServer
+const Port = 3000
+let MyApp = new RpiGpioServer(Port)
+MyApp.Start()
+```
+Options
+```js
+// GPIO config
+const Config = [
     {"pin":2, "type": "Relais", "name": "Relais1", "statu": "high", "activeLow" : true, "TimeOut": 10},
     {"pin":3, "type": "Relais", "name": "Relais2", "statu": "high", "activeLow" : true, "TimeOut": 10},
     {"pin":7, "type": "Button", "name": "Button1", "statu": "rising", "debounceTimeout" : 500}
  ]
+ // CoreX Worker config
+ const CoreX = {
+     "WorkerAdress": "http://192.168.10.21:5000",
+     "WorkerApi": "/api",
+     "LoginApi": "/login",
+     "Login": "Aquagreen",
+     "Pass":"123"
+}
 let RpiGpioServer = require('@gregvanko/rpigpioserver').RpiGpioServer
-let MyApp = new RpiGpioServer(3000, config)
+const Port = 3000
+let MyApp = new RpiGpioServer(Port, Config, CoreX)
 MyApp.Start()
 ```
 ## Definition des fonctions disponibles sur les différentes adresses
@@ -35,6 +52,12 @@ Adresse : api
 Action : setgpio
 Data : {"name": string, "value": number}
 ```
+* "Ping Pong"
+```
+Adresse : ping
+Action : null
+Data : null
+```
 
 * Simuler l'appui sur un boutton confiuré dans l'object config
 ```
@@ -43,10 +66,22 @@ Action : testbutton
 Data : {"name": string}
 ```
 
-### Adresse : ping
-* Recevoir la valeur "pong"
+### Adresse : config
+* Login to worker
 ```
-Adresse : ping
-Action : null
+Adresse : congif
+Action : login
+Data : {"login": "string", "pass": "string"}
+```
+* "Ping Pong" worker
+```
+Adresse : congif
+Action : pingworker
 Data : null
+```
+* test button
+```
+Adresse : congif
+Action : testbutton
+Data : {"name": "string"}
 ```

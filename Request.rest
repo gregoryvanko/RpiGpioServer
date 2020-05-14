@@ -1,0 +1,72 @@
+### testbutton
+POST http://localhost:3000/config
+content-type: application/json
+
+{
+    "FctName": "testbutton",
+    "FctData": "{\"name\": \"Button1\"}"
+}
+
+### login
+POST http://localhost:3000/config
+content-type: application/json
+
+{
+    "FctName": "login",
+    "FctData": "{\"login\": \"Aquagreen\", \"pass\": \"123\"}"
+}
+
+### pingworker
+POST http://localhost:3000/config
+content-type: application/json
+
+{
+    "FctName": "pingworker",
+    "FctData": ""
+}
+
+########### API
+### Ping 
+POST http://localhost:3000/api
+content-type: application/json
+
+{
+    "FctName": "ping",
+    "FctData": ""
+}
+
+### getconfig
+POST http://localhost:3000/api
+content-type: application/json
+
+{
+    "FctName": "getconfig",
+    "FctData": ""
+}
+
+### setconfig
+POST http://localhost:3000/api
+content-type: application/json
+
+{
+    "FctName": "setconfig",
+    "FctData": "{\"config\": [{\"pin\":2, \"type\": \"Relais\", \"name\": \"Relais1\", \"statu\": \"high\", \"activeLow\" : true, \"TimeOut\": 10},{\"pin\":3, \"type\": \"Relais\", \"name\": \"Relais2\", \"statu\": \"high\", \"activeLow\" : true, \"TimeOut\": 10},{\"pin\":7, \"type\": \"Button\", \"name\": \"Button1\", \"statu\": \"rising\", \"debounceTimeout\" : 500}]}"
+}
+
+### setgpio
+POST http://localhost:3000/api
+content-type: application/json
+
+{
+    "FctName": "setgpio",
+    "FctData": "{\"name\": \"Relais1\", \"value\": 1}"
+}
+
+### getstatu
+POST http://localhost:3000/api
+content-type: application/json
+
+{
+    "FctName": "getstatu",
+    "FctData": ""
+}

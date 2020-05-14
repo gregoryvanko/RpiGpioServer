@@ -37,12 +37,21 @@ class RpiGpioServer {
                 case "ping":
                     res.json({Error: false, ErrorMsg:"No error",Data: "pong"})
                     break
+                case "setconfig":
+                        me.ApiSetConfig(req.body.FctData, res)
+                        break
+                case "getconfig":
+                        me.ApiGetConfig(res)
+                        break
+                case "getstatu":
+                        me.ApiGetStatu(res)
+                        break
                 default:
                     res.json({Error: true, ErrorMsg:"No API for FctName: " + req.body.FctName})
                     break
             }
         })
-        // Ping
+        // Config
         this._Express.post('/config', function(req, res, next){
             switch (req.body.FctName) {
                 case "testbutton":
@@ -123,7 +132,7 @@ class RpiGpioServer {
 
                     this._MyGPIO.SetRelayStatus(InputData.name, relaisStatus).then((reponse)=>{
                         let ReponseSetGpio = new Object()
-                        ReponseSetGpio. ApiVersion = "1.0"
+                        ReponseSetGpio.ApiVersion = "1.0"
                         ReponseSetGpio.Name = InputData.name
                         ReponseSetGpio.value = Value
                         res.json({Error: false, ErrorMsg: "no error", Data: ReponseSetGpio})
@@ -152,7 +161,7 @@ class RpiGpioServer {
             if(typeof InputData.name != "undefined"){
                 this.ButtonPressed(InputData.name).then((reponse)=>{
                     let ReponseTestbutton = new Object()
-                    ReponseTestbutton. ApiVersion = "1.0"
+                    ReponseTestbutton.ApiVersion = "1.0"
                     ReponseTestbutton.info = reponse
                     res.json({Error: false, ErrorMsg: "no error", Data: ReponseTestbutton})
                 },(erreur)=>{
@@ -166,6 +175,7 @@ class RpiGpioServer {
         }
     }
 
+    /** Bouton pressed */
     ButtonPressed(ButtonName){
         return new Promise((resolve, reject)=>{
             console.log("Boutton pressed: " + ButtonName)
@@ -187,7 +197,7 @@ class RpiGpioServer {
     }
 
     /**
-     * Actionne un GPIO
+     * Login sur le worker via API
      * @param {object} Data Object contenant la commande a realiser
      * @param {res} res res
      */
@@ -198,7 +208,7 @@ class RpiGpioServer {
                 if(typeof InputData.pass != "undefined"){
                     this.Login(InputData).then((reponse)=>{
                         let ReponseLogin = new Object()
-                        ReponseLogin. ApiVersion = "1.0"
+                        ReponseLogin.ApiVersion = "1.0"
                         ReponseLogin.info = reponse
                         res.json({Error: false, ErrorMsg: "no error", Data: ReponseLogin})
                     },(erreur)=>{
@@ -215,6 +225,7 @@ class RpiGpioServer {
         }
     }
 
+    /** Login sur le worker */
     Login(Data){
         return new Promise((resolve, reject)=>{
             if (this._CoreX != null){
@@ -236,13 +247,13 @@ class RpiGpioServer {
     }
 
     /**
-     * Ping du workerr
+     * Ping du workerr via Api
      * @param {res} res res
      */
     ApiPingWorker(res){
         this.PingWorker().then((reponse)=>{
             let ReponseTestbutton = new Object()
-            ReponseTestbutton. ApiVersion = "1.0"
+            ReponseTestbutton.ApiVersion = "1.0"
             ReponseTestbutton.info = reponse
             res.json({Error: false, ErrorMsg: "no error", Data: ReponseTestbutton})
         },(erreur)=>{
@@ -250,6 +261,7 @@ class RpiGpioServer {
         })
     }
 
+    /** Ping du worker */
     PingWorker(){
         return new Promise((resolve, reject)=>{
             if (this._CoreX != null){
@@ -269,6 +281,67 @@ class RpiGpioServer {
         })
     }
 
+    /**
+     * Set config GPIO via API
+     * @param {object} Data Object contenant la commande a realiser
+     * @param {res} res res
+     */
+    ApiSetConfig(Data, res){
+        try {
+            let InputData = JSON.parse(Data)
+            if(typeof InputData.config != "undefined"){
+                if (Array.isArray(InputData.config)){
+                    this._Config = InputData.config
+                    this._MyGPIO.SetConfig(this._Config)
+
+                    let ReponseSetConfig = new Object()
+                    ReponseSetConfig.ApiVersion = "1.0"
+                    ReponseSetConfig.Txt = "Config valided"
+                    res.json({Error: false, ErrorMsg: "Error ApiSetConfig", Data: ReponseSetConfig})
+                } else {
+                    res.json({Error: true, ErrorMsg: "Config value is not a Array", Data: null})
+                }
+            } else {
+                res.json({Error: true, ErrorMsg: 'Object "config" is missing in {"config": Array}', Data: null})
+            }
+        } catch(e) {
+            res.json({Error: true, ErrorMsg: "JSON Parse error: " + e + ' in {"config": Array}', Data: null})
+        }
+    }
+
+    /**
+     * Get config GPIO via API
+     * @param {res} res res
+     */
+    ApiGetConfig(res){
+        let ReponseSetConfig = new Object()
+        ReponseSetConfig.ApiVersion = "1.0"
+        ReponseSetConfig.Config = this._MyGPIO.GetConfig()
+        res.json({Error: false, ErrorMsg: "Error ApiSetConfig", Data: ReponseSetConfig})
+    }
+
+    /**
+     * Get satu of RpiGpioServer
+     * @param {res} res res
+     */
+    ApiGetStatu(res){
+        let Reponse = new Object()
+        Reponse.ApiVersion = "1.0"
+        // Login statu
+        if (this._LoginToken != null){Reponse.Login = true}
+        else {Reponse.Login = false}
+        // Config
+        Reponse.Config = this._MyGPIO.GetConfig()
+        // Ping Worker
+        this.PingWorker().then((reponse)=>{
+            Reponse.PingWorker = reponse
+            res.json({Error: false, ErrorMsg: "Error ApiGetStatu", Data: Reponse})
+        },(erreur)=>{
+            Reponse.PingWorker = "Error on Ping Worker: " + erreur
+            res.json({Error: false, ErrorMsg: "Error ApiGetStatu", Data: Reponse})
+        })
+        
+    }
 
  }
  module.exports.RpiGpioServer = RpiGpioServer
