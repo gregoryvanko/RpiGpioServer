@@ -446,6 +446,5 @@ class RpiGpioServer {
             res.json({Error: false, ErrorMsg: "Error ApiRestart", Data: Reponse})
         }
     }
-
  }
  module.exports.RpiGpioServer = RpiGpioServer
