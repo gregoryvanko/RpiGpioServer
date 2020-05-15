@@ -1,8 +1,9 @@
 class RpiGpioServer {
-    constructor(Port=3000, Config = [], CoreX = null){
+    constructor(Port=3000){
         this._Port = Port
-        this._Config = Config
-        this._CoreX = CoreX
+        this._Config = null
+        this._CoreX = null
+        this._LoginToken = null
 
         // Variable Interne Express
         this._Express = require('express')()
@@ -11,8 +12,14 @@ class RpiGpioServer {
         // Class GPIO
         var GPIO = require('./gpio')
         this._MyGPIO = new GPIO.GPIO(this._Config)
+    }
 
-        this._LoginToken = null
+    SetPinConfig(PinConfig = []){
+        this._Config = PinConfig
+    }
+
+    SetCoreXConfig(CoreXConfig = null){
+        this._CoreX = CoreXConfig
     }
  
     /* Start de l'application */
@@ -108,6 +115,11 @@ class RpiGpioServer {
 
         // Lorsque l'on ferme l'application, il faut libérer les GPIO
         process.on('SIGINT', this._MyGPIO.Close.bind(this._MyGPIO))
+
+        // If PinConfig existe alors set pinconfig
+        if (this._Config != null){
+            this._MyGPIO.SetConfig(this._Config)
+        }
         
         // if Worker CoreX existe, alors login to worker
         if (this._CoreX != null){

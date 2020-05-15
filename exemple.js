@@ -1,4 +1,4 @@
-// const Config = [
+// const PinConfig = [
 //     {"pin":2, "type": "Relais", "name": "Relais1", "statu": "high", "activeLow" : true, "TimeOut": 10},
 //     {"pin":3, "type": "Relais", "name": "Relais2", "statu": "high", "activeLow" : true, "TimeOut": 1},
 //     {"pin":4, "type": "Relais", "name": "Relais3", "statu": "high", "activeLow" : true, "TimeOut": 1},
@@ -10,7 +10,7 @@
 //     {"pin":7, "type": "Button", "name": "Button1", "statu": "rising", "debounceTimeout" : 500}
 // ]
 
-const CoreX = {
+const CoreXConfig = {
      "WorkerAdress": "http://192.168.10.21:5000",
      "WorkerApi": "/api",
      "LoginApi": "/login",
@@ -20,5 +20,7 @@ const CoreX = {
 
 let RpiGpioServer = require('./index').RpiGpioServer
 const Port = 3000
-let MyApp = new RpiGpioServer(Port, null, CoreX)
+let MyApp = new RpiGpioServer(Port)
+//MyApp.SetPinConfig(PinConfig)
+MyApp.SetCoreXConfig(CoreXConfig)
 MyApp.Start()

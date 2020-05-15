@@ -25,13 +25,13 @@ MyApp.Start()
 Options
 ```js
 // GPIO config
-const Config = [
+const PinConfig = [
     {"pin":2, "type": "Relais", "name": "Relais1", "statu": "high", "activeLow" : true, "TimeOut": 10},
     {"pin":3, "type": "Relais", "name": "Relais2", "statu": "high", "activeLow" : true, "TimeOut": 10},
     {"pin":7, "type": "Button", "name": "Button1", "statu": "rising", "debounceTimeout" : 500}
  ]
  // CoreX Worker config
- const CoreX = {
+ const CoreXConfig = {
      "WorkerAdress": "http://192.168.10.21:5000",
      "WorkerApi": "/api",
      "LoginApi": "/login",
@@ -40,7 +40,9 @@ const Config = [
 }
 let RpiGpioServer = require('@gregvanko/rpigpioserver').RpiGpioServer
 const Port = 3000
-let MyApp = new RpiGpioServer(Port, Config, CoreX)
+let MyApp = new RpiGpioServer(Port)
+MyApp.SetPinConfig(PinConfig)
+MyApp.SetCoreXConfig(CoreXConfig)
 MyApp.Start()
 ```
 ## Definition des fonctions disponibles sur les différentes adresses
