@@ -100,28 +100,28 @@ Data : null
 ### Adresse : config
 * Login to worker CoreX
 ```
-Adresse : congif
+Adresse : config
 Action : login
 Data : {"login": "string", "pass": "string"}
 ```
 
 * "Ping Pong" du worker CoreX
 ```
-Adresse : congif
+Adresse : config
 Action : pingworker
 Data : null
 ```
 
 * test button
 ```
-Adresse : congif
+Adresse : config
 Action : testbutton
 Data : {"name": "string"}
 ```
 
 * Get de la config des GPIO definie dans le Worker CoreX
 ```
-Adresse : congif
+Adresse : config
 Action : getworkerconfig
 Data : null
 ```
