@@ -46,14 +46,21 @@ MyApp.Start()
 ## Definition des fonctions disponibles sur les différentes adresses
 Il est posible de tester les api via la page d'acceuil du serveur
 ### Adresse : api
-* Activer une valeur pour un des GPIO configurés dans l'object config
+* Set de la valeur pour un des GPIO configurés dans l'object config
 ```
 Adresse : api
 Action : setgpio
 Data : {"name": string, "value": number}
 ```
 
-* "Ping Pong"
+* Get de la valeur pour un des GPIO configurés dans l'object config
+```
+Adresse : api
+Action : getgpio
+Data : {"name": string}
+```
+
+* "Ping Pong" du serveur RpiGpioServer 
 ```
 Adresse : api
 Action : null
@@ -77,26 +84,42 @@ Data : null
 * Get global statu du serveur RpiGpioServer 
 ```
 Adresse : api
-Action : getstatu
+Action : getstatus
+Data : null
+```
+
+* Restart du serveur RpiGpioServer 
+```
+Adresse : api
+Action : restart
 Data : null
 ```
 
 ### Adresse : config
-* Login to worker
+* Login to worker CoreX
 ```
 Adresse : congif
 Action : login
 Data : {"login": "string", "pass": "string"}
 ```
-* "Ping Pong" worker
+
+* "Ping Pong" du worker CoreX
 ```
 Adresse : congif
 Action : pingworker
 Data : null
 ```
+
 * test button
 ```
 Adresse : congif
 Action : testbutton
 Data : {"name": "string"}
+```
+
+* Get de la config des GPIO definie dans le Worker CoreX
+```
+Adresse : congif
+Action : getworkerconfig
+Data : null
 ```

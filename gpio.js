@@ -26,36 +26,36 @@ class GPIO extends EventEmitter{
 			let MyObject = new Object()
 			if(typeof element.name != "undefined"){
 				MyObject.Name = element.name
+				if(element.type == "Relais"){
+					if(typeof element.TimeOut != "undefined"){
+						MyObject.TimeOutValue = parseInt(element.TimeOut)
+					} else {
+						MyObject.TimeOutValue = null
+					}
+					MyObject.TimeOut = null
+					if(process.env.NODE_ENV != 'dev') {
+						var Gpio = require('onoff').Gpio
+						MyObject.Relais = new Gpio(element.pin, element.statu, 'none', {activeLow: element.activeLow})
+					} else {
+						MyObject.Relais = "GPIO Object Relais"
+					}
+					this._ListOfRelais.push(MyObject)
+				} else if (element.type == "Button"){
+					if(process.env.NODE_ENV === 'dev') {
+						MyObject.Button = "GPIO Object Button"
+					} else {
+						var Gpio = require('onoff').Gpio
+						MyObject.Button = new Gpio(element.pin, 'in' , element.statu, {debounceTimeout: element.debounceTimeout})
+						var me = this
+						MyObject.Button.watch(function (err, value){
+							if (err) {console.error('There was an error on GPIO: ', err)}
+							else {me.emit(me._EmitOn_Button_Rising, element.name)}
+						})
+					}
+					this._ListOfButtons.push(MyObject)
+				}
 			} else {
-				MyObject.Name = null
-			}
-			if(element.type == "Relais"){
-				if(typeof element.TimeOut != "undefined"){
-					MyObject.TimeOutValue = parseInt(element.TimeOut)
-				} else {
-					MyObject.TimeOutValue = null
-				}
-				MyObject.TimeOut = null
-				if(process.env.NODE_ENV != 'dev') {
-					var Gpio = require('onoff').Gpio
-					MyObject.Relais = new Gpio(element.pin, element.statu, 'none', {activeLow: element.activeLow})
-				} else {
-					MyObject.Relais = "GPIO Object Relais"
-				}
-				this._ListOfRelais.push(MyObject)
-			} else if (element.type == "Button"){
-				if(process.env.NODE_ENV === 'dev') {
-					MyObject.Button = "GPIO Object Button"
-				} else {
-					var Gpio = require('onoff').Gpio
-					MyObject.Button = new Gpio(element.pin, 'in' , element.statu, {debounceTimeout: element.debounceTimeout})
-					var me = this
-					MyObject.Button.watch(function (err, value){
-						if (err) {console.error('There was an error on GPIO: ', err)}
-						else {me.emit(me._EmitOn_Button_Rising, element.name)}
-					})
-				}
-				this._ListOfButtons.push(MyObject)
+				console.log("Error : name not found in Config")
 			}
 		})
 	}
@@ -110,6 +110,28 @@ class GPIO extends EventEmitter{
 				}
 			} else {
 				reject('SetRelayStatus error: Relais "'+ Name + '" not found')
+			}
+		})
+	}
+
+	GetRelayStatus(Name){
+		return new Promise((resolve, reject)=>{
+			let ObjectRelais = null
+			// On cherche le relais dans la liste des relais
+			this._ListOfRelais.forEach(element => {
+				if(element.Name == Name){
+					ObjectRelais = element
+				}
+			})
+			// Si le relais est trouvé
+			if (ObjectRelais != null){
+				if(process.env.NODE_ENV != 'dev'){
+					resolve(ObjectRelais.Relais.readSync())
+				} else {
+					resolve("DevVal=1")
+				}
+			} else {
+				reject('GetRelayStatus error: Relais "'+ Name + '" not found')
 			}
 		})
 	}

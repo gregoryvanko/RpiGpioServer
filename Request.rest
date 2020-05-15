@@ -25,6 +25,15 @@ content-type: application/json
     "FctData": ""
 }
 
+### getworkerconfig
+POST http://localhost:3000/config
+content-type: application/json
+
+{
+    "FctName": "getworkerconfig",
+    "FctData": ""
+}
+
 ########### API
 ### Ping 
 POST http://localhost:3000/api
@@ -62,11 +71,29 @@ content-type: application/json
     "FctData": "{\"name\": \"Relais1\", \"value\": 1}"
 }
 
-### getstatu
+### getgpio
 POST http://localhost:3000/api
 content-type: application/json
 
 {
-    "FctName": "getstatu",
+    "FctName": "getgpio",
+    "FctData": "{\"name\": \"Relais1\"}"
+}
+
+### getstatus
+POST http://localhost:3000/api
+content-type: application/json
+
+{
+    "FctName": "getstatus",
+    "FctData": ""
+}
+
+### ApiRestart
+POST http://localhost:3000/api
+content-type: application/json
+
+{
+    "FctName": "restart",
     "FctData": ""
 }

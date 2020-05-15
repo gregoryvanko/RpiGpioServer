@@ -34,18 +34,24 @@ class RpiGpioServer {
                 case "setgpio":
                     me.ApiSetGpio(req.body.FctData, res)
                     break
+                case "getgpio":
+                    me.ApiGetGpio(req.body.FctData, res)
+                    break
                 case "ping":
                     res.json({Error: false, ErrorMsg:"No error",Data: "pong"})
                     break
                 case "setconfig":
-                        me.ApiSetConfig(req.body.FctData, res)
-                        break
+                    me.ApiSetConfig(req.body.FctData, res)
+                    break
                 case "getconfig":
-                        me.ApiGetConfig(res)
-                        break
-                case "getstatu":
-                        me.ApiGetStatu(res)
-                        break
+                    me.ApiGetConfig(res)
+                    break
+                case "getstatus":
+                    me.ApiGetStatus(res)
+                    break
+                case "restart":
+                    me.ApiRestart(res)
+                    break
                 default:
                     res.json({Error: true, ErrorMsg:"No API for FctName: " + req.body.FctName})
                     break
@@ -62,6 +68,9 @@ class RpiGpioServer {
                     break
                 case "pingworker":
                     me.ApiPingWorker(res)
+                    break
+                case "getworkerconfig":
+                    me.ApiGetWorkerConfig(res)
                     break
                 default:
                     res.json({Error: true, ErrorMsg:"FctName not find: " + req.body.FctName})
@@ -104,7 +113,13 @@ class RpiGpioServer {
         if (this._CoreX != null){
             this.Login({"login": this._CoreX.Login, "pass": this._CoreX.Pass}).then((reponse)=>{
                 this.PingWorker().then((reponse)=>{
-                    console.log("Loged to the worker")
+                    this.GetWorkerConfig().then((reponseGetWorkerConfig)=>{
+                        this._Config = reponseGetWorkerConfig
+                        this._MyGPIO.SetConfig(this._Config)
+                        console.log("Loged to the worker and config set")
+                    },(erreur)=>{
+                        console.log("Error on GetWorkerConfig: " + erreur)
+                    })
                 },(erreur)=>{
                     console.log("Error on Ping to worker: " + erreur)
                 })
@@ -147,6 +162,32 @@ class RpiGpioServer {
             }
         } catch(e) {
             res.json({Error: true, ErrorMsg: "JSON Parse error: " + e + ' in {"name": "string", "value": number}', Data: null})
+        }
+    }
+
+    /**
+     * Statu un GPIO
+     * @param {object} Data Object contenant la commande a realiser
+     * @param {res} res res
+     */
+    ApiGetGpio(Data, res){
+        try {
+            let InputData = JSON.parse(Data)
+            if(typeof InputData.name != "undefined"){
+                this._MyGPIO.GetRelayStatus(InputData.name).then((reponse)=>{
+                    let Reponse = new Object()
+                    Reponse.ApiVersion = "1.0"
+                    Reponse.Name = InputData.name
+                    Reponse.value = reponse
+                    res.json({Error: false, ErrorMsg: "no error", Data: Reponse})
+                },(erreur)=>{
+                    res.json({Error: true, ErrorMsg: "Error on GetGpio: " + erreur, Data: null})
+                })
+            } else {
+                res.json({Error: true, ErrorMsg: 'Object "name" is missing in {"name": "string"}', Data: null})
+            }
+        } catch(e) {
+            res.json({Error: true, ErrorMsg: "JSON Parse error: " + e + ' in {"name": "string"}', Data: null})
         }
     }
 
@@ -247,7 +288,7 @@ class RpiGpioServer {
     }
 
     /**
-     * Ping du workerr via Api
+     * Ping du worker via Api
      * @param {res} res res
      */
     ApiPingWorker(res){
@@ -277,6 +318,46 @@ class RpiGpioServer {
                 })
             } else {
                 reject("No CoreX Worker defined")
+            }
+        })
+    }
+
+    /**
+     * GetWorkerConfig via Api
+     * @param {res} res res
+     */
+    ApiGetWorkerConfig(res){
+        this.GetWorkerConfig().then((reponse)=>{
+            this._Config = reponse
+            this._MyGPIO.SetConfig(this._Config)
+            let Reponse = new Object()
+            Reponse.ApiVersion = "1.0"
+            Reponse.WorkerConfig = reponse
+            res.json({Error: false, ErrorMsg: "no error", Data: Reponse})
+        },(erreur)=>{
+            res.json({Error: true, ErrorMsg: "Error on GetWorkerConfig: " + erreur, Data: null})
+        })
+    }
+
+    /**
+     * Get Worker Config via Api
+     * @param {res} res res
+     */
+    GetWorkerConfig(res){
+        return new Promise((resolve, reject)=>{
+            if (this._LoginToken != null){
+                const axios = require('axios')
+                axios.post(this._CoreX.WorkerAdress + this._CoreX.WorkerApi, {Token:this._LoginToken, FctName:"Worker", FctData:{Fct:"GetConfig"}}).then(res => {
+                    if (res.data.Error){
+                        reject(res.data.ErrorMsg)
+                    } else {
+                        resolve(res.data.Data)
+                    }
+                }).catch(error => {
+                    reject(error)
+                })
+            } else {
+                reject("Not logged into the Worker")
             }
         })
     }
@@ -324,7 +405,7 @@ class RpiGpioServer {
      * Get satu of RpiGpioServer
      * @param {res} res res
      */
-    ApiGetStatu(res){
+    ApiGetStatus(res){
         let Reponse = new Object()
         Reponse.ApiVersion = "1.0"
         // Login statu
@@ -335,12 +416,35 @@ class RpiGpioServer {
         // Ping Worker
         this.PingWorker().then((reponse)=>{
             Reponse.PingWorker = reponse
-            res.json({Error: false, ErrorMsg: "Error ApiGetStatu", Data: Reponse})
+            res.json({Error: false, ErrorMsg: "Error ApiGetStatus", Data: Reponse})
         },(erreur)=>{
             Reponse.PingWorker = "Error on Ping Worker: " + erreur
-            res.json({Error: false, ErrorMsg: "Error ApiGetStatu", Data: Reponse})
+            res.json({Error: false, ErrorMsg: "Error ApiGetStatus", Data: Reponse})
         })
-        
+    }
+
+    /**
+     * Restart RpiGpioServer
+     * @param {res} res res
+     */
+    ApiRestart(res){
+        let Reponse = new Object()
+        Reponse.ApiVersion = "1.0"
+        if(process.env.NODE_ENV != 'dev'){
+            const exec = require('child_process').exec
+            const cmd = 'reboot'
+            exec(cmd, function (error, stdout, stderr) {
+                if (error) {
+                    res.json({Error: false, ErrorMsg: "Error lors du restart", Data: null})
+                } else {
+                    Reponse.Value = "Restart"
+                    res.json({Error: false, ErrorMsg: "Error ApiRestart", Data: Reponse})
+                }
+            })
+        } else {
+            Reponse.Value = "Restart"
+            res.json({Error: false, ErrorMsg: "Error ApiRestart", Data: Reponse})
+        }
     }
 
  }
