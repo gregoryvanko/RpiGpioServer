@@ -45,7 +45,7 @@ class RpiGpioServer {
                     me.ApiGetGpio(req.body.FctData, res)
                     break
                 case "ping":
-                    res.json({Error: false, ErrorMsg:"No error",Data: "pong"})
+                    res.json({Error: false, ErrorMsg: null,Data: "pong"})
                     break
                 case "setconfig":
                     me.ApiSetConfig(req.body.FctData, res)
@@ -162,7 +162,7 @@ class RpiGpioServer {
                         ReponseSetGpio.ApiVersion = "1.0"
                         ReponseSetGpio.Name = InputData.name
                         ReponseSetGpio.value = Value
-                        res.json({Error: false, ErrorMsg: "no error", Data: ReponseSetGpio})
+                        res.json({Error: false, ErrorMsg: null, Data: ReponseSetGpio})
                     },(erreur)=>{
                         res.json({Error: true, ErrorMsg: "Error on SetGpio: " + erreur, Data: null})
                     })
@@ -191,7 +191,7 @@ class RpiGpioServer {
                     Reponse.ApiVersion = "1.0"
                     Reponse.Name = InputData.name
                     Reponse.value = reponse
-                    res.json({Error: false, ErrorMsg: "no error", Data: Reponse})
+                    res.json({Error: false, ErrorMsg: null, Data: Reponse})
                 },(erreur)=>{
                     res.json({Error: true, ErrorMsg: "Error on GetGpio: " + erreur, Data: null})
                 })
@@ -216,7 +216,7 @@ class RpiGpioServer {
                     let ReponseTestbutton = new Object()
                     ReponseTestbutton.ApiVersion = "1.0"
                     ReponseTestbutton.info = reponse
-                    res.json({Error: false, ErrorMsg: "no error", Data: ReponseTestbutton})
+                    res.json({Error: false, ErrorMsg: null, Data: ReponseTestbutton})
                 },(erreur)=>{
                     res.json({Error: true, ErrorMsg: "Error on sending pressed button: " + erreur, Data: null})
                 })
@@ -263,7 +263,7 @@ class RpiGpioServer {
                         let ReponseLogin = new Object()
                         ReponseLogin.ApiVersion = "1.0"
                         ReponseLogin.info = reponse
-                        res.json({Error: false, ErrorMsg: "no error", Data: ReponseLogin})
+                        res.json({Error: false, ErrorMsg: null, Data: ReponseLogin})
                     },(erreur)=>{
                         res.json({Error: true, ErrorMsg: "Error on logoin to worker: " + erreur, Data: null})
                     })
@@ -308,7 +308,7 @@ class RpiGpioServer {
             let ReponseTestbutton = new Object()
             ReponseTestbutton.ApiVersion = "1.0"
             ReponseTestbutton.info = reponse
-            res.json({Error: false, ErrorMsg: "no error", Data: ReponseTestbutton})
+            res.json({Error: false, ErrorMsg: null, Data: ReponseTestbutton})
         },(erreur)=>{
             res.json({Error: true, ErrorMsg: "Error on Ping Worker: " + erreur, Data: null})
         })
@@ -345,7 +345,7 @@ class RpiGpioServer {
             let Reponse = new Object()
             Reponse.ApiVersion = "1.0"
             Reponse.WorkerConfig = reponse
-            res.json({Error: false, ErrorMsg: "no error", Data: Reponse})
+            res.json({Error: false, ErrorMsg: null, Data: Reponse})
         },(erreur)=>{
             res.json({Error: true, ErrorMsg: "Error on GetWorkerConfig: " + erreur, Data: null})
         })
@@ -390,7 +390,7 @@ class RpiGpioServer {
                     let ReponseSetConfig = new Object()
                     ReponseSetConfig.ApiVersion = "1.0"
                     ReponseSetConfig.Txt = "Config valided"
-                    res.json({Error: false, ErrorMsg: "Error ApiSetConfig", Data: ReponseSetConfig})
+                    res.json({Error: false, ErrorMsg: null, Data: ReponseSetConfig})
                 } else {
                     res.json({Error: true, ErrorMsg: "Config value is not a Array", Data: null})
                 }
@@ -410,7 +410,7 @@ class RpiGpioServer {
         let ReponseSetConfig = new Object()
         ReponseSetConfig.ApiVersion = "1.0"
         ReponseSetConfig.Config = this._MyGPIO.GetConfig()
-        res.json({Error: false, ErrorMsg: "Error ApiSetConfig", Data: ReponseSetConfig})
+        res.json({Error: false, ErrorMsg: null, Data: ReponseSetConfig})
     }
 
     /**
@@ -428,10 +428,10 @@ class RpiGpioServer {
         // Ping Worker
         this.PingWorker().then((reponse)=>{
             Reponse.PingWorker = reponse
-            res.json({Error: false, ErrorMsg: "Error ApiGetStatus", Data: Reponse})
+            res.json({Error: false, ErrorMsg: null, Data: Reponse})
         },(erreur)=>{
             Reponse.PingWorker = "Error on Ping Worker: " + erreur
-            res.json({Error: false, ErrorMsg: "Error ApiGetStatus", Data: Reponse})
+            res.json({Error: false, ErrorMsg: null, Data: Reponse})
         })
     }
 
@@ -447,15 +447,15 @@ class RpiGpioServer {
             const cmd = 'reboot'
             exec(cmd, function (error, stdout, stderr) {
                 if (error) {
-                    res.json({Error: false, ErrorMsg: "Error lors du restart", Data: null})
+                    res.json({Error: true, ErrorMsg: "Error lors du restart:" + error, Data: null})
                 } else {
                     Reponse.Value = "Restart"
-                    res.json({Error: false, ErrorMsg: "Error ApiRestart", Data: Reponse})
+                    res.json({Error: false, ErrorMsg: null, Data: Reponse})
                 }
             })
         } else {
             Reponse.Value = "Restart"
-            res.json({Error: false, ErrorMsg: "Error ApiRestart", Data: Reponse})
+            res.json({Error: false, ErrorMsg: null, Data: Reponse})
         }
     }
  }

@@ -1,5 +1,9 @@
+#@hostname = localhost
+@hostname = 192.168.30.10
+@port = 3000
+
 ### testbutton
-POST http://localhost:3000/config
+POST http://{{hostname}}:{{port}}/config
 content-type: application/json
 
 {
@@ -8,7 +12,7 @@ content-type: application/json
 }
 
 ### login
-POST http://localhost:3000/config
+POST http://{{hostname}}:{{port}}/config
 content-type: application/json
 
 {
@@ -17,7 +21,7 @@ content-type: application/json
 }
 
 ### pingworker
-POST http://localhost:3000/config
+POST http://{{hostname}}:{{port}}/config
 content-type: application/json
 
 {
@@ -26,7 +30,7 @@ content-type: application/json
 }
 
 ### getworkerconfig
-POST http://localhost:3000/config
+POST http://{{hostname}}:{{port}}/config
 content-type: application/json
 
 {
@@ -36,7 +40,7 @@ content-type: application/json
 
 ########### API
 ### Ping 
-POST http://localhost:3000/api
+POST http://{{hostname}}:{{port}}/api
 content-type: application/json
 
 {
@@ -45,7 +49,7 @@ content-type: application/json
 }
 
 ### getconfig
-POST http://localhost:3000/api
+POST http://{{hostname}}:{{port}}/api
 content-type: application/json
 
 {
@@ -54,7 +58,7 @@ content-type: application/json
 }
 
 ### setconfig
-POST http://localhost:3000/api
+POST http://{{hostname}}:{{port}}/api
 content-type: application/json
 
 {
@@ -63,7 +67,7 @@ content-type: application/json
 }
 
 ### setgpio
-POST http://localhost:3000/api
+POST http://{{hostname}}:{{port}}/api
 content-type: application/json
 
 {
@@ -72,7 +76,7 @@ content-type: application/json
 }
 
 ### getgpio
-POST http://localhost:3000/api
+POST http://{{hostname}}:{{port}}/api
 content-type: application/json
 
 {
@@ -81,7 +85,7 @@ content-type: application/json
 }
 
 ### getstatus
-POST http://localhost:3000/api
+POST http://{{hostname}}:{{port}}/api
 content-type: application/json
 
 {
@@ -90,7 +94,7 @@ content-type: application/json
 }
 
 ### ApiRestart
-POST http://localhost:3000/api
+POST http://{{hostname}}:{{port}}/api
 content-type: application/json
 
 {
