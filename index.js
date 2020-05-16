@@ -444,7 +444,7 @@ class RpiGpioServer {
         Reponse.ApiVersion = "1.0"
         if(process.env.NODE_ENV != 'dev'){
             const exec = require('child_process').exec
-            const cmd = 'reboot'
+            const cmd = 'sudo reboot'
             exec(cmd, function (error, stdout, stderr) {
                 if (error) {
                     res.json({Error: true, ErrorMsg: "Error lors du restart:" + error, Data: null})
