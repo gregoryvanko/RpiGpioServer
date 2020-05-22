@@ -178,7 +178,7 @@ class RpiGpioServer {
     }
 
     /**
-     * Statu un GPIO
+     * status un GPIO
      * @param {object} Data Object contenant la commande a realiser
      * @param {res} res res
      */
@@ -420,7 +420,7 @@ class RpiGpioServer {
     ApiGetStatus(res){
         let Reponse = new Object()
         Reponse.ApiVersion = "1.0"
-        // Login statu
+        // Login status
         if (this._LoginToken != null){Reponse.Login = true}
         else {Reponse.Login = false}
         // Config

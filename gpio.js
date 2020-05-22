@@ -35,7 +35,7 @@ class GPIO extends EventEmitter{
 					MyObject.TimeOut = null
 					if(process.env.NODE_ENV != 'dev') {
 						var Gpio = require('onoff').Gpio
-						MyObject.Relais = new Gpio(element.pin, element.statu, 'none', {activeLow: element.activeLow})
+						MyObject.Relais = new Gpio(element.pin, element.status, 'none', {activeLow: element.activeLow})
 					} else {
 						MyObject.Relais = "GPIO Object Relais"
 					}
@@ -45,7 +45,7 @@ class GPIO extends EventEmitter{
 						MyObject.Button = "GPIO Object Button"
 					} else {
 						var Gpio = require('onoff').Gpio
-						MyObject.Button = new Gpio(element.pin, 'in' , element.statu, {debounceTimeout: element.debounceTimeout})
+						MyObject.Button = new Gpio(element.pin, 'in' , element.status, {debounceTimeout: element.debounceTimeout})
 						var me = this
 						MyObject.Button.watch(function (err, value){
 							if (err) {console.error('There was an error on GPIO: ', err)}

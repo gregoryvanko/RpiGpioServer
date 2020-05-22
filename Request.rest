@@ -63,7 +63,7 @@ content-type: application/json
 
 {
     "FctName": "setconfig",
-    "FctData": "{\"config\": [{\"pin\":2, \"type\": \"Relais\", \"name\": \"Relais1\", \"statu\": \"high\", \"activeLow\" : true, \"TimeOut\": 10},{\"pin\":3, \"type\": \"Relais\", \"name\": \"Relais2\", \"statu\": \"high\", \"activeLow\" : true, \"TimeOut\": 10},{\"pin\":7, \"type\": \"Button\", \"name\": \"Button1\", \"statu\": \"rising\", \"debounceTimeout\" : 500}]}"
+    "FctData": "{\"config\": [{\"pin\":2, \"type\": \"Relais\", \"name\": \"Relais1\", \"status\": \"high\", \"activeLow\" : true, \"TimeOut\": 10},{\"pin\":3, \"type\": \"Relais\", \"name\": \"Relais2\", \"status\": \"high\", \"activeLow\" : true, \"TimeOut\": 10},{\"pin\":7, \"type\": \"Button\", \"name\": \"Button1\", \"status\": \"rising\", \"debounceTimeout\" : 500}]}"
 }
 
 ### setgpio
