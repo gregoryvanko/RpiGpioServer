@@ -4,7 +4,7 @@ A Node.js application for controling GPIO of RaspberryPi.
 ## Function available:
 * Relais
     * Set Relais to On/Off
-    * Get Relais Statu
+    * Get Relais status
 * Button
     * Send post data when a button is pressed
 
@@ -26,9 +26,9 @@ Options
 ```js
 // GPIO config
 const PinConfig = [
-    {"pin":2, "type": "Relais", "name": "Relais1", "statu": "high", "activeLow" : true, "TimeOut": 10},
-    {"pin":3, "type": "Relais", "name": "Relais2", "statu": "high", "activeLow" : true, "TimeOut": 10},
-    {"pin":7, "type": "Button", "name": "Button1", "statu": "rising", "debounceTimeout" : 500}
+    {"pin":2, "type": "Relais", "name": "Relais1", "status": "high", "activeLow" : true, "TimeOut": 10},
+    {"pin":3, "type": "Relais", "name": "Relais2", "status": "high", "activeLow" : true, "TimeOut": 10},
+    {"pin":7, "type": "Button", "name": "Button1", "status": "rising", "debounceTimeout" : 500}
  ]
  // CoreX Worker config
  const CoreXConfig = {
@@ -83,7 +83,7 @@ Action : getconfig
 Data : null
 ```
 
-* Get global statu du serveur RpiGpioServer 
+* Get global status du serveur RpiGpioServer 
 ```
 Adresse : api
 Action : getstatus
