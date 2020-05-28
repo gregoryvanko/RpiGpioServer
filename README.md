@@ -51,77 +51,77 @@ Il est posible de tester les api via la page d'acceuil du serveur
 * Set de la valeur pour un des GPIO configurés dans l'object config
 ```
 Adresse : api
-Action : setgpio
-Data : {"name": string, "value": number}
+FctName : "setgpio"
+FctData : "{"name": string, "value": number}"
 ```
 
 * Get de la valeur pour un des GPIO configurés dans l'object config
 ```
 Adresse : api
-Action : getgpio
-Data : {"name": string}
+FctName : "getgpio"
+FctData : "{"name": string}"
 ```
 
 * "Ping Pong" du serveur RpiGpioServer 
 ```
 Adresse : api
-Action : null
-Data : null
+FctName : "ping"
+FctData : ""
 ```
 
 * Set de la config des GPIO
 ```
 Adresse : api
-Action : setconfig
-Data : {"config": Array}
+FctName : "setconfig"
+FctData : "{"config": Array}"
 ```
 
 * Get de la config des GPIO
 ```
 Adresse : api
-Action : getconfig
-Data : null
+FctName : "getconfig"
+FctData : ""
 ```
 
 * Get global status du serveur RpiGpioServer 
 ```
 Adresse : api
-Action : getstatus
-Data : null
+FctName : "getstatus"
+FctData : ""
 ```
 
 * Restart du serveur RpiGpioServer 
 ```
 Adresse : api
-Action : restart
-Data : null
+FctName : "restart"
+FctData : ""
 ```
 
 ### Adresse : config
 * Login to worker CoreX
 ```
 Adresse : config
-Action : login
-Data : {"login": "string", "pass": "string"}
+FctName : "login"
+FctData : "{"login": "string", "pass": "string"}"
 ```
 
 * "Ping Pong" du worker CoreX
 ```
 Adresse : config
-Action : pingworker
-Data : null
+FctName : "pingworker"
+FctData : ""
 ```
 
 * test button
 ```
 Adresse : config
-Action : testbutton
-Data : {"name": "string"}
+FctName : "testbutton"
+FctData : "{"name": "string"}"
 ```
 
 * Get de la config des GPIO definie dans le Worker CoreX
 ```
 Adresse : config
-Action : getworkerconfig
-Data : null
+FctName : "getworkerconfig"
+FctData : ""
 ```
