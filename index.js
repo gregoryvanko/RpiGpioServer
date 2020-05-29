@@ -127,8 +127,12 @@ class RpiGpioServer {
                 this.PingWorker().then((reponse)=>{
                     this.GetWorkerConfig().then((reponseGetWorkerConfig)=>{
                         this._Config = reponseGetWorkerConfig
-                        this._MyGPIO.SetConfig(this._Config)
-                        console.log("Loged to the worker and config set")
+                        if (this._Config != null){
+                            this._MyGPIO.SetConfig(this._Config)
+                            console.log("Loged to the worker and config set")
+                        } else {
+                            console.log("Loged to the worker and receive config is null")
+                        }
                     },(erreur)=>{
                         console.log("Error on GetWorkerConfig: " + erreur)
                     })
