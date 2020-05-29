@@ -26,9 +26,9 @@ Options
 ```js
 // GPIO config
 const PinConfig = [
-    {"pin":2, "type": "Relais", "name": "Relais1", "status": "high", "activeLow" : true, "TimeOut": 10},
-    {"pin":3, "type": "Relais", "name": "Relais2", "status": "high", "activeLow" : true, "TimeOut": 10},
-    {"pin":7, "type": "Button", "name": "Button1", "status": "rising", "debounceTimeout" : 500}
+    {"pin":2, "type": "Relais", "name": "Relais1", "status": "high", "activelow" : true, "timeout": 10},
+    {"pin":3, "type": "Relais", "name": "Relais2", "status": "high", "activelow" : true, "timeout": 10},
+    {"pin":7, "type": "Button", "name": "Button1", "status": "rising", "debouncetimeout" : 500}
  ]
  // CoreX Worker config
  const CoreXConfig = {

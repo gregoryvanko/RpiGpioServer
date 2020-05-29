@@ -27,15 +27,15 @@ class GPIO extends EventEmitter{
 			if(typeof element.name != "undefined"){
 				MyObject.Name = element.name
 				if(element.type == "Relais"){
-					if(typeof element.TimeOut != "undefined"){
-						MyObject.TimeOutValue = parseInt(element.TimeOut)
+					if(typeof element.timeout != "undefined"){
+						MyObject.TimeOutValue = parseInt(element.timeout)
 					} else {
 						MyObject.TimeOutValue = null
 					}
 					MyObject.TimeOut = null
 					if(process.env.NODE_ENV != 'dev') {
 						var Gpio = require('onoff').Gpio
-						MyObject.Relais = new Gpio(element.pin, element.status, 'none', {activeLow: element.activeLow})
+						MyObject.Relais = new Gpio(element.pin, element.status, 'none', {activeLow: element.activelow})
 					} else {
 						MyObject.Relais = "GPIO Object Relais"
 					}
@@ -45,7 +45,7 @@ class GPIO extends EventEmitter{
 						MyObject.Button = "GPIO Object Button"
 					} else {
 						var Gpio = require('onoff').Gpio
-						MyObject.Button = new Gpio(element.pin, 'in' , element.status, {debounceTimeout: element.debounceTimeout})
+						MyObject.Button = new Gpio(element.pin, 'in' , element.status, {debounceTimeout: element.debouncetimeout})
 						var me = this
 						MyObject.Button.watch(function (err, value){
 							if (err) {console.error('There was an error on GPIO: ', err)}
@@ -97,7 +97,7 @@ class GPIO extends EventEmitter{
 						ObjectRelais.Relais.writeSync(Status)
 					}
 					if (Status == this._Const_RelayStatus_On){
-						ObjectRelais.TimeOut = setTimeout(()=>{ this.SetRelayStatus(Name, this._Const_RelayStatus_Off)}, (ObjectRelais.TimeOutValue * 1000))
+						ObjectRelais.TimeOut = setTimeout(()=>{ this.SetRelayStatus(Name, this._Const_RelayStatus_Off)}, (ObjectRelais.TimeOutValue * 1000 * 60))
 					} else {
 						if (ObjectRelais.TimeOut != null){
 							clearTimeout(ObjectRelais.TimeOut)
