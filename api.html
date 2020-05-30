@@ -154,7 +154,8 @@
         function Send(){
             let Action = document.getElementById("Action").value
             let Data = document.getElementById("Data").value
-            GlobalCallApiPromise(Action, Data).then((reponse)=>{
+            if (Data == ""){Data = "{}"}
+            GlobalCallApiPromise(Action, JSON.parse(Data)).then((reponse)=>{
                 document.getElementById("Reponse").innerHTML=JSON.stringify(reponse)
                 document.getElementById("Error").innerHTML=""
 

@@ -152,19 +152,18 @@ class RpiGpioServer {
      */
     ApiSetGpio(Data, res){
         try {
-            let InputData = JSON.parse(Data)
-            if(typeof InputData.name != "undefined"){
-                if(typeof InputData.value != "undefined"){
-                    let Value = parseInt(InputData.value)
+            if(typeof Data.name != "undefined"){
+                if(typeof Data.value != "undefined"){
+                    let Value = parseInt(Data.value)
 
                     let relaisStatus =""
                     if (Value == 0){relaisStatus = this._MyGPIO.Const_RelayStatus_Off} 
                     else {relaisStatus = this._MyGPIO.Const_RelayStatus_On}
 
-                    this._MyGPIO.SetRelayStatus(InputData.name, relaisStatus).then((reponse)=>{
+                    this._MyGPIO.SetRelayStatus(Data.name, relaisStatus).then((reponse)=>{
                         let ReponseSetGpio = new Object()
                         ReponseSetGpio.ApiVersion = "1.0"
-                        ReponseSetGpio.Name = InputData.name
+                        ReponseSetGpio.Name = Data.name
                         ReponseSetGpio.value = Value
                         res.json({Error: false, ErrorMsg: null, Data: ReponseSetGpio})
                     },(erreur)=>{
@@ -188,12 +187,11 @@ class RpiGpioServer {
      */
     ApiGetGpio(Data, res){
         try {
-            let InputData = JSON.parse(Data)
-            if(typeof InputData.name != "undefined"){
-                this._MyGPIO.GetRelayStatus(InputData.name).then((reponse)=>{
+            if(typeof Data.name != "undefined"){
+                this._MyGPIO.GetRelayStatus(Data.name).then((reponse)=>{
                     let Reponse = new Object()
                     Reponse.ApiVersion = "1.0"
-                    Reponse.Name = InputData.name
+                    Reponse.Name = Data.name
                     Reponse.value = reponse
                     res.json({Error: false, ErrorMsg: null, Data: Reponse})
                 },(erreur)=>{
@@ -214,9 +212,8 @@ class RpiGpioServer {
      */
     ApiTestbutton(Data, res){
         try {
-            let InputData = JSON.parse(Data)
-            if(typeof InputData.name != "undefined"){
-                this.ButtonPressed(InputData.name).then((reponse)=>{
+            if(typeof Data.name != "undefined"){
+                this.ButtonPressed(Data.name).then((reponse)=>{
                     let ReponseTestbutton = new Object()
                     ReponseTestbutton.ApiVersion = "1.0"
                     ReponseTestbutton.info = reponse
@@ -260,10 +257,9 @@ class RpiGpioServer {
      */
     ApiLogin(Data,res){
         try {
-            let InputData = JSON.parse(Data)
-            if(typeof InputData.login != "undefined"){
-                if(typeof InputData.pass != "undefined"){
-                    this.Login(InputData).then((reponse)=>{
+            if(typeof Data.login != "undefined"){
+                if(typeof Data.pass != "undefined"){
+                    this.Login(Data).then((reponse)=>{
                         let ReponseLogin = new Object()
                         ReponseLogin.ApiVersion = "1.0"
                         ReponseLogin.info = reponse
@@ -385,10 +381,9 @@ class RpiGpioServer {
      */
     ApiSetConfig(Data, res){
         try {
-            let InputData = JSON.parse(Data)
-            if(typeof InputData.config != "undefined"){
-                if (Array.isArray(InputData.config)){
-                    this._Config = InputData.config
+            if(typeof Data.config != "undefined"){
+                if (Array.isArray(Data.config)){
+                    this._Config = Data.config
                     this._MyGPIO.SetConfig(this._Config)
 
                     let ReponseSetConfig = new Object()
