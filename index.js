@@ -154,11 +154,12 @@ class RpiGpioServer {
         try {
             if(typeof Data.name != "undefined"){
                 if(typeof Data.value != "undefined"){
+                    console.log("Data : " + Data.value)
                     let Value = parseInt(Data.value)
-
+                    console.log("Value : " + Value)
                     let relaisStatus =""
-                    if (Value == 0){relaisStatus = this._MyGPIO.Const_RelayStatus_Off} 
-                    else {relaisStatus = this._MyGPIO.Const_RelayStatus_On}
+                    if (Value == 0){relaisStatus = this._MyGPIO.Const_RelayStatus_Off; console.log("RelayStatus_Off")} 
+                    else {relaisStatus = this._MyGPIO.Const_RelayStatus_On; console.log("RelayStatus_On")}
 
                     this._MyGPIO.SetRelayStatus(Data.name, relaisStatus).then((reponse)=>{
                         let ReponseSetGpio = new Object()
