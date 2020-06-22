@@ -1,5 +1,5 @@
-@hostname = localhost
-#@hostname = 192.168.30.10
+#@hostname = localhost
+@hostname = 192.168.30.10
 @port = 3000
 
 ### testbutton
@@ -68,7 +68,7 @@ content-type: application/json
         "type": "Relais",
         "name": "Relais1",
         "status": "high",
-        "activeLow": "true",
+        "activelow": "true",
         "timeout": "9"
       }]}
 }
