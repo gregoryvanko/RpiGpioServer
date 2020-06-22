@@ -34,10 +34,12 @@ class GPIO extends EventEmitter{
 					}
 					MyObject.TimeOut = null
 					if(process.env.NODE_ENV != 'dev') {
-						console.log("pin: " + element.pin + ", status: " + element.status + ", activelow: " + element.activelow)
 						var Gpio = require('onoff').Gpio
+						let Myactivelow = null
+						if (element.activelow == "true"){Myactivelow = true} 
+                    	else {Myactivelow = false}
 						//MyObject.Relais = new Gpio(element.pin, element.status, 'none', {activeLow: element.activelow})
-						MyObject.Relais = new Gpio(element.pin, element.status, 'none', {activeLow: true})
+						MyObject.Relais = new Gpio(element.pin, element.status, 'none', {activeLow: Myactivelow})
 					} else {
 						MyObject.Relais = "GPIO Object Relais"
 					}

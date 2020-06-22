@@ -79,7 +79,7 @@ content-type: application/json
 
 {
     "FctName": "setgpio",
-    "FctData": {"name": "Relais1", "value": 1}
+    "FctData": {"name": "Relais1", "value": 0}
 }
 
 ### getgpio
