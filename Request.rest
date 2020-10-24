@@ -1,17 +1,18 @@
-#@hostname = localhost
-@hostname = 192.168.30.10
+@hostname = localhost
+#@hostname = 192.168.30.10
 @port = 3000
 
-### testbutton
+########### Send request to /config RpiGPIOServer de dev ou de prod
+### Demande d'execution de la fonction "testbutton" sur RpiGPIOServer
 POST http://{{hostname}}:{{port}}/config
 content-type: application/json
 
 {
     "FctName": "testbutton",
-    "FctData": {"name": "Button1"}
+    "FctData": {"name": "Button-1"}
 }
 
-### login
+### Demande d'execution de la fonction "login" sur RpiGPIOServer
 POST http://{{hostname}}:{{port}}/config
 content-type: application/json
 
@@ -20,7 +21,7 @@ content-type: application/json
     "FctData": {"login":"Aquagreen", "pass": "123"}
 }
 
-### pingworker
+### Demande d'execution de la fonction "pingworker" sur RpiGPIOServer
 POST http://{{hostname}}:{{port}}/config
 content-type: application/json
 
@@ -29,7 +30,7 @@ content-type: application/json
     "FctData": ""
 }
 
-### getworkerconfig
+### Demande d'execution de la fonction "getworkerconfig" sur RpiGPIOServer
 POST http://{{hostname}}:{{port}}/config
 content-type: application/json
 
@@ -38,8 +39,9 @@ content-type: application/json
     "FctData": ""
 }
 
-########### API
-### Ping 
+########### Send request to /API RpiGPIOServer de dev ou de prod
+########### simule une demande envoyée par Aquagreen server
+### Aquagreen send "ping" et RpiGPIOServer respond with pong
 POST http://{{hostname}}:{{port}}/api
 content-type: application/json
 
@@ -48,7 +50,7 @@ content-type: application/json
     "FctData": ""
 }
 
-### getconfig
+### Aquagreen send "getconfig" et RpiGPIOServer respond with config
 POST http://{{hostname}}:{{port}}/api
 content-type: application/json
 
@@ -57,7 +59,7 @@ content-type: application/json
     "FctData": ""
 }
 
-### setconfig
+### Aquagreen send "setconfig"
 POST http://{{hostname}}:{{port}}/api
 content-type: application/json
 
@@ -69,29 +71,33 @@ content-type: application/json
         "name": "Relais1",
         "status": "high",
         "activelow": "true",
-        "timeout": "9"
+        "timeout": "9",
+        "custom": {
+                "displayname": "Garage",
+                "relaistype": "Turbine"
+            }
       }]}
 }
 
-### setgpio
+### Aquagreen send "setgpio"
 POST http://{{hostname}}:{{port}}/api
 content-type: application/json
 
 {
     "FctName": "setgpio",
-    "FctData": {"name": "Relais1", "value": 0}
+    "FctData": {"name": "Relais 1", "value": 0}
 }
 
-### getgpio
+### Aquagreen send "getgpio"
 POST http://{{hostname}}:{{port}}/api
 content-type: application/json
 
 {
     "FctName": "getgpio",
-    "FctData": {"name": "Relais1"}
+    "FctData": {"name": "Relais 1"}
 }
 
-### getstatus
+### Aquagreen send "getstatus"
 POST http://{{hostname}}:{{port}}/api
 content-type: application/json
 
@@ -100,7 +106,7 @@ content-type: application/json
     "FctData": ""
 }
 
-### ApiRestart
+### Aquagreen send "ApiRestart" et RpiGPIOServer fait un restart
 POST http://{{hostname}}:{{port}}/api
 content-type: application/json
 

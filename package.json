@@ -4,7 +4,6 @@
   "description": "rpigpioserver",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon —inspect exemple.js",
     "dev": "NODE_ENV=dev nodemon —inspect exemple.js",
     "save": "git add -A && git commit -a -m 'auto save' && npm version minor && npm publish && git push"
